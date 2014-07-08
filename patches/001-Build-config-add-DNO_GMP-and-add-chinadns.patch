@@ -1,6 +1,6 @@
-diff -Nru a/CHANGELOG b/CHANGELOG
+diff -Nur a/CHANGELOG b/CHANGELOG
 --- a/CHANGELOG	Sat May 17 03:21:56 2014
-+++ b/CHANGELOG	Mon Jul  7 20:34:44 2014
++++ b/CHANGELOG	Mon Jul  7 12:31:10 2014
 @@ -1,3 +1,20 @@
 +version 2.72
 +            Add ra-advrouter mode, for RFC-3775 mobile IPv6 support.
@@ -22,9 +22,9 @@ diff -Nru a/CHANGELOG b/CHANGELOG
  version 2.71
              Subtle change to error handling to help DNSSEC validation 
  	    when servers fail to provide NODATA answers for 
-diff -Nru a/Makefile b/Makefile
+diff -Nur a/Makefile b/Makefile
 --- a/Makefile	Sat May 17 03:21:56 2014
-+++ b/Makefile	Mon Jul  7 20:34:44 2014
++++ b/Makefile	Mon Jul  7 12:31:10 2014
 @@ -61,7 +61,7 @@
  lua_libs =      `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_LUASCRIPT $(PKG_CONFIG) --libs lua5.1` 
  nettle_cflags = `echo $(COPTS) | $(top)/bld/pkg-wrapper HAVE_DNSSEC $(PKG_CONFIG) --cflags nettle hogweed`
@@ -43,9 +43,15 @@ diff -Nru a/Makefile b/Makefile
  
  hdrs = dnsmasq.h config.h dhcp-protocol.h dhcp6-protocol.h \
         dns-protocol.h radv-protocol.h ip6addr.h
-diff -Nru a/bld/Android.mk b/bld/Android.mk
+diff -Nur a/VERSION b/VERSION
+--- a/VERSION	Sat May 17 03:21:56 2014
++++ b/VERSION	Tue Jul  8 11:55:53 2014
+@@ -1 +1 @@
+- (HEAD, v2.71, master)
++ (HEAD, v2.72, master)
+diff -Nur a/bld/Android.mk b/bld/Android.mk
 --- a/bld/Android.mk	Sat May 17 03:21:56 2014
-+++ b/bld/Android.mk	Mon Jul  7 20:34:44 2014
++++ b/bld/Android.mk	Mon Jul  7 12:31:10 2014
 @@ -9,7 +9,7 @@
  		    rfc2131.c tftp.c util.c conntrack.c \
  		    dhcp6.c rfc3315.c dhcp-common.c outpacket.c \
@@ -55,9 +61,9 @@ diff -Nru a/bld/Android.mk b/bld/Android.mk
  
  LOCAL_MODULE := dnsmasq
  
-diff -Nru a/bld/pkg-wrapper b/bld/pkg-wrapper
+diff -Nur a/bld/pkg-wrapper b/bld/pkg-wrapper
 --- a/bld/pkg-wrapper	Sat May 17 03:21:56 2014
-+++ b/bld/pkg-wrapper	Mon Jul  7 20:34:44 2014
++++ b/bld/pkg-wrapper	Mon Jul  7 12:31:10 2014
 @@ -11,9 +11,14 @@
  
  if grep "^\#[[:space:]]*define[[:space:]]*$search" config.h >/dev/null 2>&1 || \
@@ -75,9 +81,9 @@ diff -Nru a/bld/pkg-wrapper b/bld/pkg-wrapper
      elif grep "^\#[[:space:]]*define[[:space:]]*${search}_STATIC" config.h >/dev/null 2>&1 || \
  	      echo $in | grep ${search}_STATIC >/dev/null 2>&1; then
  	pkg=`$pkg  --static $op $*`
-diff -Nru a/dbus/DBus-interface b/dbus/DBus-interface
+diff -Nur a/dbus/DBus-interface b/dbus/DBus-interface
 --- a/dbus/DBus-interface	Sat May 17 03:21:56 2014
-+++ b/dbus/DBus-interface	Mon Jul  7 20:34:45 2014
++++ b/dbus/DBus-interface	Mon Jul  7 12:31:10 2014
 @@ -40,6 +40,14 @@
  Returns nothing. Clears the domain name cache and re-reads
  /etc/hosts. The same as sending dnsmasq a HUP signal.
@@ -93,9 +99,9 @@ diff -Nru a/dbus/DBus-interface b/dbus/DBus-interface
  SetServers
  ----------
  Returns nothing. Takes a set of arguments representing the new
-diff -Nru a/dnsmasq.conf.example b/dnsmasq.conf.example
+diff -Nur a/dnsmasq.conf.example b/dnsmasq.conf.example
 --- a/dnsmasq.conf.example	Sat May 17 03:21:56 2014
-+++ b/dnsmasq.conf.example	Mon Jul  7 20:34:45 2014
++++ b/dnsmasq.conf.example	Mon Jul  7 12:31:10 2014
 @@ -25,6 +25,13 @@
  #conf-file=%%PREFIX%%/share/dnsmasq/trust-anchors.conf
  #dnssec
@@ -110,9 +116,9 @@ diff -Nru a/dnsmasq.conf.example b/dnsmasq.conf.example
  # Replies which are not DNSSEC signed may be legitimate, because the domain
  # is unsigned, or may be forgeries. Setting this option tells dnsmasq to
  # check that an unsigned reply is OK, by finding a secure proof that a DS 
-diff -Nru a/man/dnsmasq.8 b/man/dnsmasq.8
+diff -Nur a/man/dnsmasq.8 b/man/dnsmasq.8
 --- a/man/dnsmasq.8	Sat May 17 03:21:56 2014
-+++ b/man/dnsmasq.8	Mon Jul  7 20:34:45 2014
++++ b/man/dnsmasq.8	Mon Jul  7 12:31:10 2014
 @@ -794,7 +794,7 @@
  for details.)
  
@@ -142,9 +148,9 @@ diff -Nru a/man/dnsmasq.8 b/man/dnsmasq.8
  .TP
  .B \-s, --domain=<domain>[,<address range>[,local]]
  Specifies DNS domains for the DHCP server. Domains may be be given 
-diff -Nru a/man/fr/dnsmasq.8 b/man/fr/dnsmasq.8
+diff -Nur a/man/fr/dnsmasq.8 b/man/fr/dnsmasq.8
 --- a/man/fr/dnsmasq.8	Sat May 17 03:21:56 2014
-+++ b/man/fr/dnsmasq.8	Mon Jul  7 20:34:45 2014
++++ b/man/fr/dnsmasq.8	Mon Jul  7 12:31:10 2014
 @@ -1659,7 +1659,7 @@
  comme si elles arrivaient de l'interface <interface>. Cette option est
  nécessaire lors de l'utilisation de pont ethernet "ancien mode" sur plate-forme
@@ -154,9 +160,9 @@ diff -Nru a/man/fr/dnsmasq.8 b/man/fr/dnsmasq.8
  .TP
  .B \-s, --domain=<domaine>[,<gamme d'adresses>[,local]]
  Spécifie le domaine du serveur DHCP. Le domaine peut être donné de manière
-diff -Nru a/src/bpf.c b/src/bpf.c
+diff -Nur a/src/bpf.c b/src/bpf.c
 --- a/src/bpf.c	Sat May 17 03:21:56 2014
-+++ b/src/bpf.c	Mon Jul  7 20:34:45 2014
++++ b/src/bpf.c	Mon Jul  7 12:31:10 2014
 @@ -376,7 +376,7 @@
      die(_("cannot create PF_ROUTE socket: %s"), NULL, EC_BADNET);
  }
@@ -184,9 +190,9 @@ diff -Nru a/src/bpf.c b/src/bpf.c
       }
  }
  
-diff -Nru a/src/config.h b/src/config.h
+diff -Nur a/src/config.h b/src/config.h
 --- a/src/config.h	Sat May 17 03:21:56 2014
-+++ b/src/config.h	Mon Jul  7 20:34:45 2014
++++ b/src/config.h	Mon Jul  7 12:31:10 2014
 @@ -105,6 +105,8 @@
     define this to include the facility to act as an authoritative DNS
     server for one or more zones.
@@ -240,9 +246,9 @@ diff -Nru a/src/config.h b/src/config.h
  #undef HAVE_IPSET
  #endif
  
-diff -Nru a/src/dbus.c b/src/dbus.c
+diff -Nur a/src/dbus.c b/src/dbus.c
 --- a/src/dbus.c	Sat May 17 03:21:56 2014
-+++ b/src/dbus.c	Mon Jul  7 20:34:45 2014
++++ b/src/dbus.c	Mon Jul  7 12:31:10 2014
 @@ -44,6 +44,12 @@
  "    <method name=\"SetServersEx\">\n"
  "      <arg name=\"servers\" direction=\"in\" type=\"aas\"/>\n"
@@ -321,9 +327,9 @@ diff -Nru a/src/dbus.c b/src/dbus.c
      }
    else if (strcmp(method, "ClearCache") == 0)
      clear_cache = 1;
-diff -Nru a/src/dhcp.c b/src/dhcp.c
+diff -Nur a/src/dhcp.c b/src/dhcp.c
 --- a/src/dhcp.c	Sat May 17 03:21:56 2014
-+++ b/src/dhcp.c	Mon Jul  7 20:34:45 2014
++++ b/src/dhcp.c	Mon Jul  7 12:31:10 2014
 @@ -232,7 +232,7 @@
    for (bridge = daemon->bridges; bridge; bridge = bridge->next)
      {
@@ -343,9 +349,9 @@ diff -Nru a/src/dhcp.c b/src/dhcp.c
      }
  #elif defined(HAVE_SOLARIS_NETWORK)
    else if ((ntohs(mess->flags) & 0x8000) || mess->hlen != ETHER_ADDR_LEN || mess->htype != ARPHRD_ETHER)
-diff -Nru a/src/dhcp6.c b/src/dhcp6.c
+diff -Nur a/src/dhcp6.c b/src/dhcp6.c
 --- a/src/dhcp6.c	Sat May 17 03:21:56 2014
-+++ b/src/dhcp6.c	Mon Jul  7 20:34:45 2014
++++ b/src/dhcp6.c	Mon Jul  7 12:31:10 2014
 @@ -727,8 +727,7 @@
       
        if (context->flags & CONTEXT_GC && !(context->flags & CONTEXT_OLD))
@@ -356,9 +362,9 @@ diff -Nru a/src/dhcp6.c b/src/dhcp6.c
  	    {
  	      /* previously constructed context has gone. advertise it's demise */
  	      context->flags |= CONTEXT_OLD;
-diff -Nru a/src/dnsmasq.c b/src/dnsmasq.c
+diff -Nur a/src/dnsmasq.c b/src/dnsmasq.c
 --- a/src/dnsmasq.c	Sat May 17 03:21:56 2014
-+++ b/src/dnsmasq.c	Mon Jul  7 20:34:45 2014
++++ b/src/dnsmasq.c	Mon Jul  7 12:31:10 2014
 @@ -81,6 +81,7 @@
    umask(022); /* known umask, create leases and pid files as 0644 */
  
@@ -403,9 +409,9 @@ diff -Nru a/src/dnsmasq.c b/src/dnsmasq.c
  	break;
  	
        case EVENT_TERM:
-diff -Nru a/src/dnsmasq.h b/src/dnsmasq.h
+diff -Nur a/src/dnsmasq.h b/src/dnsmasq.h
 --- a/src/dnsmasq.h	Sat May 17 03:21:56 2014
-+++ b/src/dnsmasq.h	Mon Jul  7 20:36:44 2014
++++ b/src/dnsmasq.h	Mon Jul  7 12:31:10 2014
 @@ -165,6 +165,7 @@
  #define EVENT_LUA_ERR   19
  #define EVENT_TFTP_ERR  20
@@ -461,15 +467,16 @@ diff -Nru a/src/dnsmasq.h b/src/dnsmasq.h
  void safe_pipe(int *fd, int read_noblock);
  void *whine_malloc(size_t size);
  int sa_len(union mysockaddr *addr);
-@@ -1150,6 +1159,7 @@
+@@ -1150,6 +1159,8 @@
  int read_write(int fd, unsigned char *packet, int size, int rw);
  
  int wildcard_match(const char* wildcard, const char* match);
 +int wildcard_matchn(const char* wildcard, const char* match, int num);
++int cmp_int32(const void *a, const void *b);
  
  /* log.c */
  void die(char *message, char *arg1, int exit_code);
-@@ -1289,6 +1299,7 @@
+@@ -1289,6 +1300,7 @@
  int make_icmp_sock(void);
  int icmp_ping(struct in_addr addr);
  #endif
@@ -477,7 +484,7 @@ diff -Nru a/src/dnsmasq.h b/src/dnsmasq.h
  void send_alarm(time_t event, time_t now);
  void send_event(int fd, int event, int data, char *msg);
  void clear_cache_and_reload(time_t now);
-@@ -1297,7 +1308,7 @@
+@@ -1297,7 +1309,7 @@
  /* netlink.c */
  #ifdef HAVE_LINUX_NETWORK
  void netlink_init(void);
@@ -486,7 +493,7 @@ diff -Nru a/src/dnsmasq.h b/src/dnsmasq.h
  #endif
  
  /* bpf.c */
-@@ -1306,7 +1317,7 @@
+@@ -1306,7 +1318,7 @@
  void send_via_bpf(struct dhcp_packet *mess, size_t len,
  		  struct in_addr iface_addr, struct ifreq *ifr);
  void route_init(void);
@@ -495,9 +502,9 @@ diff -Nru a/src/dnsmasq.h b/src/dnsmasq.h
  #endif
  
  /* bpf.c or netlink.c */
-diff -Nru a/src/dnssec.c b/src/dnssec.c
+diff -Nur a/src/dnssec.c b/src/dnssec.c
 --- a/src/dnssec.c	Sat May 17 03:21:56 2014
-+++ b/src/dnssec.c	Mon Jul  7 20:34:45 2014
++++ b/src/dnssec.c	Mon Jul  7 12:31:10 2014
 @@ -26,7 +26,14 @@
  #  include <nettle/ecc-curve.h>
  #endif
@@ -549,9 +556,9 @@ diff -Nru a/src/dnssec.c b/src/dnssec.c
   
  #ifndef NO_NETTLE_ECC   
      case 13: case 14:
-diff -Nru a/src/forward.c b/src/forward.c
+diff -Nur a/src/forward.c b/src/forward.c
 --- a/src/forward.c	Sat May 17 03:21:56 2014
-+++ b/src/forward.c	Mon Jul  7 20:34:45 2014
++++ b/src/forward.c	Mon Jul  7 12:31:10 2014
 @@ -530,6 +530,7 @@
    char **sets = 0;
    int munged = 0, is_sign;
@@ -620,9 +627,9 @@ diff -Nru a/src/forward.c b/src/forward.c
  	{
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
-diff -Nru a/src/ipset.c b/src/ipset.c
+diff -Nur a/src/ipset.c b/src/ipset.c
 --- a/src/ipset.c	Sat May 17 03:21:56 2014
-+++ b/src/ipset.c	Mon Jul  7 20:34:45 2014
++++ b/src/ipset.c	Mon Jul  7 12:31:10 2014
 @@ -16,7 +16,7 @@
  
  #include "dnsmasq.h"
@@ -632,9 +639,9 @@ diff -Nru a/src/ipset.c b/src/ipset.c
  
  #include <string.h>
  #include <errno.h>
-diff -Nru a/src/netlink.c b/src/netlink.c
+diff -Nur a/src/netlink.c b/src/netlink.c
 --- a/src/netlink.c	Sat May 17 03:21:56 2014
-+++ b/src/netlink.c	Mon Jul  7 20:34:45 2014
++++ b/src/netlink.c	Mon Jul  7 12:31:10 2014
 @@ -38,7 +38,7 @@
  static struct iovec iov;
  static u32 netlink_pid;
@@ -739,9 +746,9 @@ diff -Nru a/src/netlink.c b/src/netlink.c
  }
  #endif
  
-diff -Nru a/src/network.c b/src/network.c
+diff -Nur a/src/network.c b/src/network.c
 --- a/src/network.c	Sat May 17 03:21:56 2014
-+++ b/src/network.c	Mon Jul  7 20:34:45 2014
++++ b/src/network.c	Mon Jul  7 12:31:10 2014
 @@ -551,7 +551,7 @@
  int enumerate_interfaces(int reset)
  {
@@ -779,9 +786,9 @@ diff -Nru a/src/network.c b/src/network.c
    return ret;
  }
  
-diff -Nru a/src/option.c b/src/option.c
+diff -Nur a/src/option.c b/src/option.c
 --- a/src/option.c	Sat May 17 03:21:56 2014
-+++ b/src/option.c	Mon Jul  7 20:36:44 2014
++++ b/src/option.c	Mon Jul  7 12:31:10 2014
 @@ -146,6 +146,8 @@
  #define LOPT_DNSSEC_CHECK  334
  #define LOPT_LOCAL_SERVICE 335
@@ -907,7 +914,7 @@ diff -Nru a/src/option.c b/src/option.c
    daemon->resolv_files = &daemon->default_resolv;
    daemon->username = CHUSER;
    daemon->runfile =  RUNFILE;
-@@ -4483,6 +4544,14 @@
+@@ -4483,6 +4544,16 @@
       as a system default to keep otherwise unconfigured installations safe. */
    if (daemon->if_names || daemon->if_except || daemon->if_addrs || daemon->authserver)
      reset_option_bool(OPT_LOCAL_SERVICE); 
@@ -915,16 +922,18 @@ diff -Nru a/src/option.c b/src/option.c
 +  if (daemon->spurious.name != NULL)
 +    read_spurious_ip_file(buff);
 +
++  struct spurious_ip *sp = &daemon->spurious;
 +  /* release extra memory allocated */
-+  daemon->spurious.ip = safe_realloc(daemon->spurious.ip,
-+    daemon->spurious.nr_entry * sizeof(daemon->spurious.ip[0]));
-+  daemon->spurious.max_entry = daemon->spurious.nr_entry;
++  sp->ip = safe_realloc(sp->ip, sp->nr_entry * sizeof(sp->ip[0]));
++  sp->max_entry = sp->nr_entry;
++  /* sort ip for bsearch */
++  qsort(sp->ip, sp->nr_entry, sizeof(sp->ip[0]), cmp_int32);
  
    if (testmode)
      {
-diff -Nru a/src/radv-protocol.h b/src/radv-protocol.h
+diff -Nur a/src/radv-protocol.h b/src/radv-protocol.h
 --- a/src/radv-protocol.h	Sat May 17 03:21:56 2014
-+++ b/src/radv-protocol.h	Mon Jul  7 20:34:45 2014
++++ b/src/radv-protocol.h	Mon Jul  7 12:31:10 2014
 @@ -49,6 +49,7 @@
  #define ICMP6_OPT_SOURCE_MAC   1
  #define ICMP6_OPT_PREFIX       3
@@ -933,9 +942,9 @@ diff -Nru a/src/radv-protocol.h b/src/radv-protocol.h
  #define ICMP6_OPT_RDNSS       25
  #define ICMP6_OPT_DNSSL       31
  
-diff -Nru a/src/radv.c b/src/radv.c
+diff -Nur a/src/radv.c b/src/radv.c
 --- a/src/radv.c	Sat May 17 03:21:56 2014
-+++ b/src/radv.c	Mon Jul  7 20:34:45 2014
++++ b/src/radv.c	Mon Jul  7 12:31:10 2014
 @@ -28,7 +28,7 @@
  
  struct ra_param {
@@ -1048,31 +1057,28 @@ diff -Nru a/src/radv.c b/src/radv.c
  		  opt->valid_lifetime = htonl(valid);
  		  opt->preferred_lifetime = htonl(preferred);
  		  opt->reserved = 0; 
-diff -Nru a/src/rfc1035.c b/src/rfc1035.c
+diff -Nur a/src/rfc1035.c b/src/rfc1035.c
 --- a/src/rfc1035.c	Sat May 17 03:21:56 2014
-+++ b/src/rfc1035.c	Mon Jul  7 20:36:44 2014
-@@ -892,6 +892,15 @@
++++ b/src/rfc1035.c	Mon Jul  7 12:31:10 2014
+@@ -892,6 +892,12 @@
    return minttl;
  }
  
-+static int in_chinadns(struct in_addr addr) {
-+  int i;
-+  for (i = 0; i < daemon->spurious.nr_entry; i++) {
-+    if (addr.s_addr == *(unsigned int *)(daemon->spurious.ip[i]))
-+      return 1;
-+  }
-+  return 0;
++static int is_spurious(struct in_addr addr) {
++  struct spurious_ip *sp = &daemon->spurious;
++  return bsearch(&addr.s_addr, sp->ip, sp->nr_entry,
++  	sizeof(sp->ip[0]), cmp_int32) != NULL;
 +}
 +
  /* Note that the following code can create CNAME chains that don't point to a real record,
     either because of lack of memory, or lack of SOA records.  These are treated by the cache code as 
     expired and cleaned out that way. 
-@@ -1109,6 +1118,15 @@
+@@ -1109,6 +1115,15 @@
  			}
  #endif
  		      
 +		      /* before insert it into cache, check if it is a fake addr */
-+                      if (in_chinadns(addr.addr.addr4)) {
++                      if (is_spurious(addr.addr.addr4)) {
 +                        my_syslog(LOG_WARNING, _("spurious IP: %d.%d.%d.%d"),
 +                                  ((u8 *)&addr.addr.addr4)[0],
 +                                  ((u8 *)&addr.addr.addr4)[1],
@@ -1083,9 +1089,9 @@ diff -Nru a/src/rfc1035.c b/src/rfc1035.c
  		      newc = cache_insert(name, &addr, now, attl, flags | F_FORWARD | secflag);
  		      if (newc && cpp)
  			{
-diff -Nru a/src/tables.c b/src/tables.c
+diff -Nur a/src/tables.c b/src/tables.c
 --- a/src/tables.c	Thu Jan  1 08:00:00 1970
-+++ b/src/tables.c	Mon Jul  7 20:34:45 2014
++++ b/src/tables.c	Mon Jul  7 12:31:10 2014
 @@ -0,0 +1,169 @@
 +/* tables.c is Copyright (c) 2014 Sven Falempin  All Rights Reserved.
 +
@@ -1256,9 +1262,9 @@ diff -Nru a/src/tables.c b/src/tables.c
 +
 +
 +#endif
-diff -Nru a/src/util.c b/src/util.c
+diff -Nur a/src/util.c b/src/util.c
 --- a/src/util.c	Sat May 17 03:21:56 2014
-+++ b/src/util.c	Mon Jul  7 20:36:44 2014
++++ b/src/util.c	Mon Jul  7 12:31:10 2014
 @@ -233,6 +233,17 @@
    return ret;
  }    
@@ -1277,7 +1283,7 @@ diff -Nru a/src/util.c b/src/util.c
  void safe_pipe(int *fd, int read_noblock)
  {
    if (pipe(fd) == -1 || 
-@@ -601,4 +612,23 @@
+@@ -601,4 +612,35 @@
      }
  
    return *wildcard == *match;
@@ -1300,4 +1306,16 @@ diff -Nru a/src/util.c b/src/util.c
 +    }
 +
 +  return (!num) || (*wildcard == *match);
++}
++
++int cmp_int32(const void *a, const void *b)
++{
++  const int32_t *ia = (int32_t *)a;
++  const int32_t *ib = (int32_t *)b;
++
++  if (*ia > *ib)
++      return 1;
++  if (*ia == *ib)
++      return 0;
++  return -1;
  }

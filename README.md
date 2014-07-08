@@ -9,7 +9,7 @@ Dnsmasq Patch 根据 [styx-hy][1] 的 [dnsmasq-chinadns][2] 制作
 ---
 
 ```
-# 删除自带的 Patch & Makefile
+# 删除旧的 Patch & Makefile
 rm -rf package/network/services/dnsmasq
 # 下载新的 Patch & Makefile
 git clone https://github.com/aa65535/openwrt-dnsmasq-chinadns.git package/network/services/dnsmasq
