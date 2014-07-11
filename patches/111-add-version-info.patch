@@ -1,0 +1,7 @@
+diff --git a/VERSION b/VERSION
+index 998eb1f..1e54d3a 100644
+--- a/VERSION
++++ b/VERSION
+@@ -1 +1 @@
+-$Format:%d$
++ (HEAD, v2.72, master)
