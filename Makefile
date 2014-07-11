@@ -100,8 +100,8 @@ define Package/dnsmasq/install
 	$(INSTALL_DIR) $(1)/usr/sbin
 	$(CP) $(PKG_INSTALL_DIR)/usr/sbin/dnsmasq $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/config
-	$(INSTALL_DATA) ./files/dhcp.conf $(1)/etc/config/dhcp
-	$(INSTALL_DATA) ./files/dnsmasq.conf $(1)/etc/dnsmasq.conf
+	$(INSTALL_CONF) ./files/dhcp.conf $(1)/etc/config/dhcp
+	$(INSTALL_CONF) ./files/dnsmasq.conf $(1)/etc/dnsmasq.conf
 	$(INSTALL_DIR) $(1)/etc/init.d
 	$(INSTALL_BIN) ./files/dnsmasq.init $(1)/etc/init.d/dnsmasq
 	$(INSTALL_DIR) $(1)/etc/hotplug.d/iface
