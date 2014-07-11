@@ -11,14 +11,14 @@ PKG_NAME:=dnsmasq
 PKG_VERSION:=2.72
 PKG_RELEASE:=3
 
-PKG_SOURCE:=$(PKG_NAME)-2.71.tar.gz
-PKG_SOURCE_URL:=http://thekelleys.org.uk/dnsmasq
-PKG_MD5SUM:=15a68f7f6cc0119e843f67d2f79598f1
+PKG_SOURCE:=master.zip
+PKG_SOURCE_URL:=https://github.com/aa65535/dnsmasq/archive
+PKG_CAT:=unzip
 
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-2.71
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-master
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -26,50 +26,48 @@ PKG_BUILD_PARALLEL:=1
 include $(INCLUDE_DIR)/package.mk
 
 define Package/dnsmasq/Default
-  SECTION:=net
-  CATEGORY:=Base system
-  TITLE:=DNS and DHCP server
-  URL:=http://www.thekelleys.org.uk/dnsmasq/
+	SECTION:=net
+	CATEGORY:=Base system
+	TITLE:=DNS and DHCP server
+	URL:=https://github.com/aa65535/dnsmasq
 endef
 
 define Package/dnsmasq
 $(call Package/dnsmasq/Default)
-  VARIANT:=nodhcpv6
+	VARIANT:=nodhcpv6
 endef
 
 define Package/dnsmasq-dhcpv6
-$(call Package/dnsmasq/Default)
-  TITLE += (with DHCPv6 support)
-  DEPENDS:=@IPV6 +kmod-ipv6
-  VARIANT:=dhcpv6
+	$(call Package/dnsmasq/Default)
+	TITLE += (with DHCPv6 support)
+	DEPENDS:=@IPV6 +kmod-ipv6
+	VARIANT:=dhcpv6
 endef
 
 define Package/dnsmasq-full
-$(call Package/dnsmasq/Default)
-  TITLE += (with DNSSEC, DHCPv6, Auth DNS, IPSET)
-  DEPENDS:=@IPV6 +kmod-ipv6 +libnettle
-  VARIANT:=full
+	$(call Package/dnsmasq/Default)
+	TITLE += (with DNSSEC, DHCPv6, Auth DNS, IPSET)
+	DEPENDS:=@IPV6 +kmod-ipv6 +libnettle
+	VARIANT:=full
 endef
 
 define Package/dnsmasq/description
-  It is intended to provide coupled DNS and DHCP service to a LAN.
+	It is intended to provide coupled DNS and DHCP service to a LAN.
 endef
 
 define Package/dnsmasq-dhcpv6/description
-$(call Package/dnsmasq/description)
-
-This is a variant with DHCPv6 support
+	$(call Package/dnsmasq/description)
+	This is a variant with DHCPv6 support
 endef
 
 define Package/dnsmasq-full/description
-$(call Package/dnsmasq/description)
-
-This is a variant with DHCPv6, DNSSEC, Authroitative DNS and IPSET support
+	$(call Package/dnsmasq/description)
+	This is a variant with DHCPv6, DNSSEC, Authroitative DNS and IPSET support
 endef
 
 define Package/dnsmasq/conffiles
-/etc/config/dhcp
-/etc/dnsmasq.conf
+	/etc/config/dhcp
+	/etc/dnsmasq.conf
 endef
 
 Package/dnsmasq-dhcpv6/conffiles = $(Package/dnsmasq/conffiles)
