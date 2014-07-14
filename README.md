@@ -1,11 +1,9 @@
-OpenWrt Dnsmasq 防DNS污染 Patch
+OpenWrt's Dnsmasq Patch & Makefile
 ===
 
-Dnsmasq Patch 根据 [dnsmasq-chinadns][1] 制作
+编译时默认从 [dnsmasq][1] 下载最新源码
 
-默认从 [dnsmasq][2] 下载最新源码进行编译
-
-若应用于 [dnsmasq releases][3] 版本 请于 [releases][4] 下载对应版本
+添加**防 DNS 污染 Patch**, 根据 [dnsmasq-chinadns][2] 制作
 
 使用说明
 ---
@@ -23,7 +21,5 @@ make package/network/services/dnsmasq/compile V=99
 ```
 
 
-  [1]: https://github.com/styx-hy/dnsmasq-chinadns
-  [2]: https://github.com/aa65535/dnsmasq
-  [3]: http://thekelleys.org.uk/dnsmasq
-  [4]: https://github.com/aa65535/openwrt-dnsmasq-chinadns/releases
+  [1]: https://github.com/aa65535/dnsmasq
+  [2]: https://github.com/styx-hy/dnsmasq-chinadns
