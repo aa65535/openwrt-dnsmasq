@@ -48,7 +48,7 @@ index 8b375de..bf88e02 100644
    if (daemon->edns_pktsz < PACKETSZ)
      daemon->edns_pktsz = PACKETSZ;
 diff --git a/src/dnsmasq.h b/src/dnsmasq.h
-index 30f176a..87120ba 100644
+index e70d10a..0f5eb56 100644
 --- a/src/dnsmasq.h
 +++ b/src/dnsmasq.h
 @@ -537,6 +537,13 @@ struct resolvc {
@@ -65,7 +65,7 @@ index 30f176a..87120ba 100644
  /* adn-hosts parms from command-line (also dhcp-hostsfile and dhcp-optsfile */
  #define AH_DIR      1
  #define AH_INACTIVE 2
-@@ -892,6 +899,7 @@ extern struct daemon {
+@@ -894,6 +901,7 @@ extern struct daemon {
  
    unsigned int options, options2;
    struct resolvc default_resolv, *resolv_files;
@@ -73,7 +73,7 @@ index 30f176a..87120ba 100644
    time_t last_resolv;
    char *servers_file;
    struct mx_srv_record *mxnames;
-@@ -1126,6 +1134,7 @@ int legal_hostname(char *c);
+@@ -1128,6 +1136,7 @@ int legal_hostname(char *c);
  char *canonicalise(char *s, int *nomem);
  unsigned char *do_rfc1035_name(unsigned char *p, char *sval);
  void *safe_malloc(size_t size);
@@ -81,7 +81,7 @@ index 30f176a..87120ba 100644
  void safe_pipe(int *fd, int read_noblock);
  void *whine_malloc(size_t size);
  int sa_len(union mysockaddr *addr);
-@@ -1152,6 +1161,7 @@ int read_write(int fd, unsigned char *packet, int size, int rw);
+@@ -1155,6 +1164,7 @@ int read_write(int fd, unsigned char *packet, int size, int rw);
  
  int wildcard_match(const char* wildcard, const char* match);
  int wildcard_matchn(const char* wildcard, const char* match, int num);
@@ -319,7 +319,7 @@ index 25ac167..9f6ced3 100644
  		      if (newc && cpp)
  			{
 diff --git a/src/util.c b/src/util.c
-index a503082..d792c5f 100644
+index 660347f..786f134 100644
 --- a/src/util.c
 +++ b/src/util.c
 @@ -233,6 +233,17 @@ void *safe_malloc(size_t size)
@@ -340,7 +340,7 @@ index a503082..d792c5f 100644
  void safe_pipe(int *fd, int read_noblock)
  {
    if (pipe(fd) == -1 || 
-@@ -621,3 +632,15 @@ int wildcard_matchn(const char* wildcard, const char* match, int num)
+@@ -634,3 +645,15 @@ int wildcard_matchn(const char* wildcard, const char* match, int num)
  
    return (!num) || (*wildcard == *match);
  }
