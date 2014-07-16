@@ -3,7 +3,9 @@ OpenWrt's Dnsmasq Patch & Makefile
 
 编译时默认从 [dnsmasq][1] 下载最新源码
 
-添加**防 DNS 污染 Patch**, 根据 [dnsmasq-chinadns][2] 制作
+添加 **防 DNS 污染 Patch**, 根据 [dnsmasq-chinadns][2] 制作
+
+添加 **pos-ttl** 选项, 设置 DNS 的最小 TTL 时间, 单位为秒
 
 使用说明
 ---
