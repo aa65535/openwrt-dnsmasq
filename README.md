@@ -7,6 +7,8 @@ OpenWrt's Dnsmasq Patch & Makefile
 
 添加 **pos-ttl** 选项, 设置 DNS 的最小 TTL 时间, 单位为秒
 
+基本配置参考 https://gist.github.com/aa65535/4c74ce870e74f873ccbf
+
 使用说明
 ---
 
