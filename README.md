@@ -3,11 +3,13 @@ OpenWrt's Dnsmasq Patch & Makefile
 
 编译时默认从 [dnsmasq][1] 下载最新源码
 
-添加 **防 DNS 污染 Patch**, 根据 [dnsmasq-chinadns][2] 制作
+添加 **防 DNS 劫持 Patch**, 根据 [dnsmasq-chinadns][2] 制作
 
-添加 **pos-ttl** 选项, 设置 DNS 的最小 TTL 时间, 单位为秒
+添加 **pos-ttl** 选项, 设置 DNS 的最小 TTL 时间, 等价于最小缓存有效期
 
-基本配置参考 https://gist.github.com/aa65535/4c74ce870e74f873ccbf
+[预编译 ipk 下载][3]
+
+[基本配置示例][4]
 
 使用说明
 ---
@@ -43,3 +45,5 @@ make
 
   [1]: https://github.com/aa65535/dnsmasq
   [2]: https://github.com/styx-hy/dnsmasq-chinadns
+  [3]: https://drive.google.com/folderview?id=0B2_XcmDgxYqrblBfaFpPR1ZSUVk#list
+  [4]: https://gist.github.com/aa65535/4c74ce870e74f873ccbf
