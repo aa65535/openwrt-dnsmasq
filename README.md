@@ -45,5 +45,5 @@ make
 
   [1]: https://github.com/aa65535/dnsmasq
   [2]: https://github.com/styx-hy/dnsmasq-chinadns
-  [3]: https://drive.google.com/folderview?id=0B2_XcmDgxYqrblBfaFpPR1ZSUVk#list
+  [3]: https://sourceforge.net/projects/openwrt-dist/files/dnsmasq/
   [4]: https://gist.github.com/aa65535/4c74ce870e74f873ccbf
