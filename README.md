@@ -7,14 +7,12 @@ OpenWrt's Dnsmasq Patch & Makefile
 
 添加 **pos-ttl** 选项, 设置 DNS 的最小 TTL 时间, 等价于最小缓存有效期
 
-[预编译 ipk 下载][3]
-
 [基本配置示例][4]
 
 使用说明
 ---
 
-编译 OpenWrt 平台的 IPK
+OpenWrt 平台的编译, [预编译 IPK 下载][3]
 
 ```
 # 删除旧的 Patch & Makefile
