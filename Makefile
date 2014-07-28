@@ -45,22 +45,22 @@ define Package/dnsmasq-full
 endef
 
 define Package/dnsmasq/description
-	It is intended to provide coupled DNS and DHCP service to a LAN.
+It is intended to provide coupled DNS and DHCP service to a LAN.
 endef
 
 define Package/dnsmasq-dhcpv6/description
 	$(call Package/dnsmasq/description)
-	This is a variant with DHCPv6 support
+This is a variant with DHCPv6 support
 endef
 
 define Package/dnsmasq-full/description
 	$(call Package/dnsmasq/description)
-	This is a variant with DHCPv6, DNSSEC, Authroitative DNS and IPSET support
+This is a variant with DHCPv6, DNSSEC, Authroitative DNS and IPSET support
 endef
 
 define Package/dnsmasq/conffiles
-	/etc/config/dhcp
-	/etc/dnsmasq.conf
+/etc/config/dhcp
+/etc/dnsmasq.conf
 endef
 
 Package/dnsmasq-dhcpv6/conffiles = $(Package/dnsmasq/conffiles)
