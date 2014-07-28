@@ -1,5 +1,5 @@
 diff --git a/dnsmasq.conf.example b/dnsmasq.conf.example
-index 206f4d1..8b5934f 100644
+index 206f4d1..616a8da 100644
 --- a/dnsmasq.conf.example
 +++ b/dnsmasq.conf.example
 @@ -25,6 +25,13 @@
@@ -16,6 +16,43 @@ index 206f4d1..8b5934f 100644
  # Replies which are not DNSSEC signed may be legitimate, because the domain
  # is unsigned, or may be forgeries. Setting this option tells dnsmasq to
  # check that an unsigned reply is OK, by finding a secure proof that a DS 
+@@ -535,7 +542,7 @@
+ # if there is one.
+ #dhcp-script=/bin/echo
+ 
+-# Set the cachesize here.
++# Set the cachesize here, maximum value 65535.
+ #cache-size=150
+ 
+ # If you want to disable negative caching, uncomment this.
+@@ -548,6 +555,14 @@
+ # seconds) here.
+ #local-ttl=
+ 
++# Set a minimum TTL value for entries in the cache.
++# For example min-cache-ttl=300 (ie: 5 minutes).
++#min-cache-ttl=
++
++# Set a maximum TTL value for entries in the cache.
++# For example max-cache-ttl=300 (ie: 5 minutes).
++#max-cache-ttl=
++
+ # If you want dnsmasq to detect attempts by Verisign to send queries
+ # to unregistered .com and .net hosts to its sitefinder service and
+ # have dnsmasq instead return the correct NXDOMAIN response, uncomment
+diff --git a/src/cache.c b/src/cache.c
+index 5cec918..568c4d4 100644
+--- a/src/cache.c
++++ b/src/cache.c
+@@ -464,6 +464,8 @@ struct crec *cache_insert(char *name, struct all_addr *addr,
+       /* Don;t mess with TTL for DNSSEC records. */
+       if (daemon->max_cache_ttl != 0 && daemon->max_cache_ttl < ttl)
+ 	ttl = daemon->max_cache_ttl;
++      if (daemon->min_cache_ttl != 0 && daemon->min_cache_ttl > ttl)
++	ttl = daemon->min_cache_ttl;
+     }
+ 
+   /* if previous insertion failed give up now. */
 diff --git a/src/config.h b/src/config.h
 index 87f8f8a..64e0139 100644
 --- a/src/config.h
@@ -48,7 +85,7 @@ index 8b375de..bf88e02 100644
    if (daemon->edns_pktsz < PACKETSZ)
      daemon->edns_pktsz = PACKETSZ;
 diff --git a/src/dnsmasq.h b/src/dnsmasq.h
-index e70d10a..0f5eb56 100644
+index e70d10a..864a0ba 100644
 --- a/src/dnsmasq.h
 +++ b/src/dnsmasq.h
 @@ -537,6 +537,13 @@ struct resolvc {
@@ -73,6 +110,15 @@ index e70d10a..0f5eb56 100644
    time_t last_resolv;
    char *servers_file;
    struct mx_srv_record *mxnames;
+@@ -927,7 +935,7 @@ extern struct daemon {
+   int max_logs;  /* queue limit */
+   int cachesize, ftabsize;
+   int port, query_port, min_port;
+-  unsigned long local_ttl, neg_ttl, max_ttl, max_cache_ttl, auth_ttl;
++  unsigned long local_ttl, neg_ttl, max_ttl, min_cache_ttl, max_cache_ttl, auth_ttl;
+   struct hostsfile *addn_hosts;
+   struct dhcp_context *dhcp, *dhcp6;
+   struct ra_interface *ra_interfaces;
 @@ -1128,6 +1136,7 @@ int legal_hostname(char *c);
  char *canonicalise(char *s, int *nomem);
  unsigned char *do_rfc1035_name(unsigned char *p, char *sval);
@@ -162,19 +208,28 @@ index 1a657bb..f07f7b0 100644
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
 diff --git a/src/option.c b/src/option.c
-index a0a6e46..d695355 100644
+index a0a6e46..49e3440 100644
 --- a/src/option.c
 +++ b/src/option.c
-@@ -146,6 +146,8 @@ struct myoption {
+@@ -146,6 +146,9 @@ struct myoption {
  #define LOPT_DNSSEC_CHECK  334
  #define LOPT_LOCAL_SERVICE 335
  #define LOPT_DNSSEC_TIME   336
 +#define LOPT_SPURIOUS_FILE 337
 +#define LOPT_SPURIOUS_IP   338
++#define LOPT_MINCTTL       339
  
  #ifdef HAVE_GETOPT_LONG
  static const struct option opts[] =  
-@@ -297,6 +299,8 @@ static const struct myoption opts[] =
+@@ -252,6 +255,7 @@ static const struct myoption opts[] =
+     { "dhcp-broadcast", 2, 0, LOPT_BROADCAST },
+     { "neg-ttl", 1, 0, LOPT_NEGTTL },
+     { "max-ttl", 1, 0, LOPT_MAXTTL },
++    { "min-cache-ttl", 1, 0, LOPT_MINCTTL },
+     { "max-cache-ttl", 1, 0, LOPT_MAXCTTL },
+     { "dhcp-alternate-port", 2, 0, LOPT_ALTPORT },
+     { "dhcp-scriptuser", 1, 0, LOPT_SCRIPTUSR },
+@@ -297,6 +301,8 @@ static const struct myoption opts[] =
      { "quiet-dhcp", 0, 0, LOPT_QUIET_DHCP },
      { "quiet-dhcp6", 0, 0, LOPT_QUIET_DHCP6 },
      { "quiet-ra", 0, 0, LOPT_QUIET_RA },
@@ -183,7 +238,7 @@ index a0a6e46..d695355 100644
      { NULL, 0, 0, 0 }
    };
  
-@@ -695,6 +699,29 @@ static void do_usage(void)
+@@ -695,6 +701,29 @@ static void do_usage(void)
      }
  }
  
@@ -213,7 +268,35 @@ index a0a6e46..d695355 100644
  #define ret_err(x) do { strcpy(errstr, (x)); return 0; } while (0)
  
  char *parse_server(char *arg, union mysockaddr *addr, union mysockaddr *source_addr, char *interface, int *flags)
-@@ -3815,6 +3842,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2334,8 +2363,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+ 	    
+ 	    if (size < 0)
+ 	      size = 0;
+-	    else if (size > 10000)
+-	      size = 10000;
++	    else if (size > 65535)
++	      size = 65535;
+ 	    
+ 	    daemon->cachesize = size;
+ 	  }
+@@ -2386,6 +2415,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+     case 'T':         /* --local-ttl */
+     case LOPT_NEGTTL: /* --neg-ttl */
+     case LOPT_MAXTTL: /* --max-ttl */
++    case LOPT_MINCTTL: /* --min-cache-ttl */
+     case LOPT_MAXCTTL: /* --max-cache-ttl */
+     case LOPT_AUTHTTL: /* --auth-ttl */
+       {
+@@ -2396,6 +2426,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+ 	  daemon->neg_ttl = (unsigned long)ttl;
+ 	else if (option == LOPT_MAXTTL)
+ 	  daemon->max_ttl = (unsigned long)ttl;
++	else if (option == LOPT_MINCTTL)
++	  daemon->min_cache_ttl = (unsigned long)ttl;
+ 	else if (option == LOPT_MAXCTTL)
+ 	  daemon->max_cache_ttl = (unsigned long)ttl;
+ 	else if (option == LOPT_AUTHTTL)
+@@ -3815,6 +3847,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	break;
        }
  #endif
@@ -234,7 +317,7 @@ index a0a6e46..d695355 100644
  		
      default:
        ret_err(_("unsupported option (check that dnsmasq was compiled with DHCP/TFTP/DNSSEC/DBus support)"));
-@@ -4144,7 +4185,24 @@ void read_servers_file(void)
+@@ -4144,7 +4190,24 @@ void read_servers_file(void)
    
    read_file(daemon->servers_file, f, LOPT_REV_SERV);
  }
@@ -260,7 +343,7 @@ index a0a6e46..d695355 100644
  
  #ifdef HAVE_DHCP
  void reread_dhcp(void)
-@@ -4258,6 +4316,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4258,6 +4321,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
    daemon->dhcp_server_port = DHCP_SERVER_PORT;
    daemon->default_resolv.is_default = 1;
    daemon->default_resolv.name = RESOLVFILE;
@@ -268,7 +351,7 @@ index a0a6e46..d695355 100644
    daemon->resolv_files = &daemon->default_resolv;
    daemon->username = CHUSER;
    daemon->runfile =  RUNFILE;
-@@ -4486,6 +4545,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4486,6 +4550,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
    if (daemon->if_names || daemon->if_except || daemon->if_addrs || daemon->authserver)
      reset_option_bool(OPT_LOCAL_SERVICE); 
  
