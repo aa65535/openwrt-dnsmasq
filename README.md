@@ -1,21 +1,21 @@
 OpenWrt's Dnsmasq Patch & Makefile
 ===
 
->编译时默认从 [dnsmasq][1] 下载最新源码
+ > 编译时默认从 [dnsmasq][1] 下载最新源码
 
 增强功能
 ---
 
->添加 `防 DNS 劫持` 功能, 来自 [dnsmasq-chinadns][2]
+ - 添加 `防 DNS 劫持` 功能, 来自 [dnsmasq-chinadns][2]
 
->添加 `--min-cache-ttl` 选项, 设置 DNS 缓存最小有效期
+ - 添加 `--min-cache-ttl` 选项, 设置 DNS 缓存最小有效期
 
->调整 `--cache-size` 选项, 设置范围 0 ~ 65535
+ - 调整 `--cache-size` 选项, 设置范围 0 ~ 65535
 
 编译说明
 ---
 
-OpenWrt 平台的编译, [预编译 IPK 下载][3]
+ - OpenWrt 平台的编译, [预编译 IPK 下载][3]
 
 ```
 # 删除旧的 Patch & Makefile
@@ -30,7 +30,7 @@ rm -f dl/master.zip && make package/network/services/dnsmasq/compile V=99
 make V=99
 ```
 
-同样可以将 Patch 应用到 [dnsmasq][1] 后编译出其他平台的可执行文件
+ - 同样可以将 Patch 应用到 [dnsmasq][1] 后编译出其他平台的可执行文件
 
 ```
 # 下载代码
@@ -46,13 +46,14 @@ make
 
 配置示例
 ---
+
 ```
 # 并发查询所有上游DNS服务器
 all-servers
 # 本地DNS缓存最小有效期
-min-cache-ttl=3600
+min-cache-ttl=300
 # 本地DNS缓存数目
-cache-size=65535
+cache-size=1500
 # 上游DNS服务器, 可设置多个
 server=8.8.4.4
 #server=8.8.8.8
