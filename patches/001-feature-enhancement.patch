@@ -1,5 +1,5 @@
 diff --git a/dnsmasq.conf.example b/dnsmasq.conf.example
-index 206f4d1..616a8da 100644
+index 206f4d1..fddfb1f 100644
 --- a/dnsmasq.conf.example
 +++ b/dnsmasq.conf.example
 @@ -25,6 +25,13 @@
@@ -25,17 +25,13 @@ index 206f4d1..616a8da 100644
  #cache-size=150
  
  # If you want to disable negative caching, uncomment this.
-@@ -548,6 +555,14 @@
+@@ -548,6 +555,10 @@
  # seconds) here.
  #local-ttl=
  
 +# Set a minimum TTL value for entries in the cache.
 +# For example min-cache-ttl=300 (ie: 5 minutes).
 +#min-cache-ttl=
-+
-+# Set a maximum TTL value for entries in the cache.
-+# For example max-cache-ttl=300 (ie: 5 minutes).
-+#max-cache-ttl=
 +
  # If you want dnsmasq to detect attempts by Verisign to send queries
  # to unregistered .com and .net hosts to its sitefinder service and
@@ -72,20 +68,8 @@ index 87f8f8a..64e0139 100644
  #ifndef RUNFILE
  #   if defined(__ANDROID__)
  #      define RUNFILE "/data/dnsmasq.pid"
-diff --git a/src/dnsmasq.c b/src/dnsmasq.c
-index 8b375de..bf88e02 100644
---- a/src/dnsmasq.c
-+++ b/src/dnsmasq.c
-@@ -82,6 +82,7 @@ int main (int argc, char **argv)
-   umask(022); /* known umask, create leases and pid files as 0644 */
- 
-   read_opts(argc, argv, compile_opts);
-+  my_syslog(LOG_INFO, _("address of daemon %p"), daemon);
-  
-   if (daemon->edns_pktsz < PACKETSZ)
-     daemon->edns_pktsz = PACKETSZ;
 diff --git a/src/dnsmasq.h b/src/dnsmasq.h
-index e70d10a..864a0ba 100644
+index e70d10a..0f1bc0f 100644
 --- a/src/dnsmasq.h
 +++ b/src/dnsmasq.h
 @@ -537,6 +537,13 @@ struct resolvc {
@@ -102,7 +86,17 @@ index e70d10a..864a0ba 100644
  /* adn-hosts parms from command-line (also dhcp-hostsfile and dhcp-optsfile */
  #define AH_DIR      1
  #define AH_INACTIVE 2
-@@ -894,6 +901,7 @@ extern struct daemon {
+@@ -570,6 +577,9 @@ struct hostsfile {
+ #define FREC_DO_QUESTION       64
+ #define FREC_ADDED_PHEADER    128
+ #define FREC_CHECK_NOSIGN     256
++#define FREC_RECURSIVE        512
++
++#define FREC_RECURSIVE_BIT      9
+ 
+ #ifdef HAVE_DNSSEC
+ #define HASH_SIZE 20 /* SHA-1 digest size */
+@@ -894,6 +904,7 @@ extern struct daemon {
  
    unsigned int options, options2;
    struct resolvc default_resolv, *resolv_files;
@@ -110,7 +104,7 @@ index e70d10a..864a0ba 100644
    time_t last_resolv;
    char *servers_file;
    struct mx_srv_record *mxnames;
-@@ -927,7 +935,7 @@ extern struct daemon {
+@@ -927,7 +938,7 @@ extern struct daemon {
    int max_logs;  /* queue limit */
    int cachesize, ftabsize;
    int port, query_port, min_port;
@@ -119,7 +113,7 @@ index e70d10a..864a0ba 100644
    struct hostsfile *addn_hosts;
    struct dhcp_context *dhcp, *dhcp6;
    struct ra_interface *ra_interfaces;
-@@ -1128,6 +1136,7 @@ int legal_hostname(char *c);
+@@ -1128,6 +1139,7 @@ int legal_hostname(char *c);
  char *canonicalise(char *s, int *nomem);
  unsigned char *do_rfc1035_name(unsigned char *p, char *sval);
  void *safe_malloc(size_t size);
@@ -127,7 +121,7 @@ index e70d10a..864a0ba 100644
  void safe_pipe(int *fd, int read_noblock);
  void *whine_malloc(size_t size);
  int sa_len(union mysockaddr *addr);
-@@ -1155,6 +1164,7 @@ int read_write(int fd, unsigned char *packet, int size, int rw);
+@@ -1155,6 +1167,7 @@ int read_write(int fd, unsigned char *packet, int size, int rw);
  
  int wildcard_match(const char* wildcard, const char* match);
  int wildcard_matchn(const char* wildcard, const char* match, int num);
@@ -136,10 +130,20 @@ index e70d10a..864a0ba 100644
  /* log.c */
  void die(char *message, char *arg1, int exit_code);
 diff --git a/src/forward.c b/src/forward.c
-index 1a657bb..f07f7b0 100644
+index 1a657bb..de806ef 100644
 --- a/src/forward.c
 +++ b/src/forward.c
-@@ -530,6 +530,7 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -338,6 +338,9 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
+ 	  memcpy(forward->hash, hash, HASH_SIZE);
+ 	  forward->forwardall = 0;
+ 	  forward->flags = 0;
++	  if (header->hb3 & HB3_RD)
++	    forward->flags |= FREC_RECURSIVE;
++	  /* my_syslog(LOG_WARNING, _("Forward original HB3_RD: %d"), header->hb3 & HB3_RD); */
+ 	  if (norebind)
+ 	    forward->flags |= FREC_NOREBIND;
+ 	  if (header->hb4 & HB4_CD)
+@@ -530,6 +533,7 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
    char **sets = 0;
    int munged = 0, is_sign;
    size_t plen; 
@@ -147,7 +151,7 @@ index 1a657bb..f07f7b0 100644
  
    (void)ad_reqd;
    (void) do_bit;
-@@ -624,8 +625,13 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -624,8 +628,13 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
  	  SET_RCODE(header, NOERROR);
  	  cache_secure = 0;
  	}
@@ -163,7 +167,7 @@ index 1a657bb..f07f7b0 100644
  	{
  	  my_syslog(LOG_WARNING, _("possible DNS-rebind attack detected: %s"), daemon->namebuff);
  	  munged = 1;
-@@ -667,6 +673,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -667,6 +676,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
        header->nscount = htons(0);
        header->arcount = htons(0);
      }
@@ -172,7 +176,16 @@ index 1a657bb..f07f7b0 100644
    
    /* the bogus-nxdomain stuff, doctor and NXDOMAIN->NODATA munging can all elide
       sections of the packet. Find the new length here and put back pseudoheader
-@@ -683,7 +691,7 @@ void reply_query(int fd, int family, time_t now)
+@@ -674,6 +685,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+   return resize_packet(header, n, pheader, plen);
+ }
+ 
++#define MAX_RETRY 8
++
+ /* sets new last_server */
+ void reply_query(int fd, int family, time_t now)
+ {
+@@ -683,14 +696,18 @@ void reply_query(int fd, int family, time_t now)
    union mysockaddr serveraddr;
    struct frec *forward;
    socklen_t addrlen = sizeof(serveraddr);
@@ -181,7 +194,8 @@ index 1a657bb..f07f7b0 100644
    size_t nn;
    struct server *server;
    void *hash;
-@@ -691,6 +699,9 @@ void reply_query(int fd, int family, time_t now)
++  int retry_cnt = 0;
+ #ifndef HAVE_DNSSEC
    unsigned int crc;
  #endif
  
@@ -191,7 +205,25 @@ index 1a657bb..f07f7b0 100644
    /* packet buffer overwritten */
    daemon->srv_save = NULL;
    
-@@ -994,9 +1005,12 @@ void reply_query(int fd, int family, time_t now)
+@@ -781,6 +798,17 @@ void reply_query(int fd, int family, time_t now)
+     {
+       int check_rebind = 0, no_cache_dnssec = 0, cache_secure = 0;
+ 
++      /* the recursive desired bit has been changed by mitm */
++      if (((forward->flags & FREC_RECURSIVE) >> FREC_RECURSIVE_BIT)
++          ^ (header->hb3 & HB3_RD)) {
++        my_syslog(LOG_WARNING, _("flags: %d, hb3_rd: %d"),
++                  (forward->flags & FREC_RECURSIVE), (header->hb3 & HB3_RD));
++        if (retry_cnt++ < MAX_RETRY)
++          goto retry;
++        else
++          return;
++      }
++
+       if (option_bool(OPT_NO_REBIND))
+ 	check_rebind = !(forward->flags & FREC_NOREBIND);
+       
+@@ -994,9 +1022,12 @@ void reply_query(int fd, int family, time_t now)
        else
  	header->hb4 &= ~HB4_CD;
        
@@ -201,14 +233,14 @@ index 1a657bb..f07f7b0 100644
 +      nn = process_reply(header, now, server, (size_t)n, check_rebind, no_cache_dnssec, cache_secure,
 +                         forward->flags & FREC_AD_QUESTION, forward->flags & FREC_DO_QUESTION, 
 +                         forward->flags & FREC_ADDED_PHEADER, forward->flags & FREC_HAS_SUBNET, &forward->source);
-+      if (nn == (size_t)-1)
++      if ((nn == (size_t)-1) && (retry_cnt++ < MAX_RETRY))
 +          goto retry;
 +      if (nn)
  	{
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
 diff --git a/src/option.c b/src/option.c
-index a0a6e46..49e3440 100644
+index a0a6e46..fc8a170 100644
 --- a/src/option.c
 +++ b/src/option.c
 @@ -146,6 +146,9 @@ struct myoption {
@@ -308,7 +340,7 @@ index a0a6e46..49e3440 100644
 +    case LOPT_SPURIOUS_IP:
 +      i = daemon->spurious.nr_entry;
 +      add_spurious_ip(arg);
-+      my_syslog(LOG_INFO, _("add spurious-ip %d.%d.%d.%d\n"),
++      my_syslog(LOG_INFO, _("add spurious ip %d.%d.%d.%d\n"),
 +        daemon->spurious.ip[i][0],
 +        daemon->spurious.ip[i][1],
 +        daemon->spurious.ip[i][2],
