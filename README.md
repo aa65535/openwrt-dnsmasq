@@ -17,32 +17,32 @@ OpenWrt's Dnsmasq Patch & Makefile
 
  - OpenWrt 平台的编译, [预编译 IPK 下载][3]
 
-   ```
-   # 删除旧的 Patch & Makefile
-   rm -rf package/network/services/dnsmasq
-   # 下载新的 Patch & Makefile
-   git clone https://github.com/aa65535/openwrt-dnsmasq.git package/network/services/dnsmasq
-   # 选择要编译的包 Base system -> dnsmasq
-   make menuconfig
-   # 开始编译 Dnsmasq
-   rm -f dl/master.zip && make package/network/services/dnsmasq/compile V=99
-   # 若上面语句编译出错, 使用下面语句编译
-   make V=99
-   ```
+ > ```
+ > # 删除旧的 Patch & Makefile
+ > rm -rf package/network/services/dnsmasq
+ > # 下载新的 Patch & Makefile
+ > git clone https://github.com/aa65535/openwrt-dnsmasq.git package/network/services/dnsmasq
+ > # 选择要编译的包 Base system -> dnsmasq
+ > make menuconfig
+ > # 开始编译 Dnsmasq
+ > rm -f dl/master.zip && make package/network/services/dnsmasq/compile V=99
+ > # 若上面语句编译出错, 使用下面语句编译
+ > make V=99
+ > ```
 
  - 同样可以将 Patch 应用到 [dnsmasq][1] 后编译出其他平台的可执行文件
 
-   ```
-   # 下载代码
-   git clone https://github.com/aa65535/dnsmasq.git
-   git clone https://github.com/aa65535/openwrt-dnsmasq.git
-   # 打 Patch
-   cd dnsmasq
-   patch -p1 < ../openwrt-dnsmasq/patches/001-feature-enhancement.patch
-   patch -p1 < ../openwrt-dnsmasq/patches/111-add-version-info.patch
-   # 开始编译
-   make
-   ```
+ > ```
+ > # 下载代码
+ > git clone https://github.com/aa65535/dnsmasq.git
+ > git clone https://github.com/aa65535/openwrt-dnsmasq.git
+ > # 打 Patch
+ > cd dnsmasq
+ > patch -p1 < ../openwrt-dnsmasq/patches/001-feature-enhancement.patch
+ > patch -p1 < ../openwrt-dnsmasq/patches/111-add-version-info.patch
+ > # 开始编译
+ > make
+ > ```
 
 配置示例
 ---
