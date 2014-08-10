@@ -240,7 +240,7 @@ index 1a657bb..de806ef 100644
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
 diff --git a/src/option.c b/src/option.c
-index a0a6e46..fc8a170 100644
+index a0a6e46..f9a1741 100644
 --- a/src/option.c
 +++ b/src/option.c
 @@ -146,6 +146,9 @@ struct myoption {
@@ -270,7 +270,16 @@ index a0a6e46..fc8a170 100644
      { NULL, 0, 0, 0 }
    };
  
-@@ -695,6 +701,29 @@ static void do_usage(void)
+@@ -454,6 +460,8 @@ static struct {
+   { LOPT_QUIET_DHCP6, OPT_QUIET_DHCP6, NULL, gettext_noop("Do not log routine DHCPv6."), NULL },
+   { LOPT_QUIET_RA, OPT_QUIET_RA, NULL, gettext_noop("Do not log RA."), NULL },
+   { LOPT_LOCAL_SERVICE, OPT_LOCAL_SERVICE, NULL, gettext_noop("Accept queries only from directly-connected networks"), NULL },
++  { LOPT_SPURIOUS_FILE, ARG_DUP, "<path>", gettext_noop("Specify path to spurious-ip file."), NULL },
++  { LOPT_SPURIOUS_IP, ARG_DUP, "<ipaddr>", gettext_noop("Specify spurious ip."), NULL },
+   { 0, 0, NULL, NULL, NULL }
+ }; 
+ 
+@@ -695,6 +703,29 @@ static void do_usage(void)
      }
  }
  
@@ -300,7 +309,7 @@ index a0a6e46..fc8a170 100644
  #define ret_err(x) do { strcpy(errstr, (x)); return 0; } while (0)
  
  char *parse_server(char *arg, union mysockaddr *addr, union mysockaddr *source_addr, char *interface, int *flags)
-@@ -2334,8 +2363,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2334,8 +2365,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	    
  	    if (size < 0)
  	      size = 0;
@@ -311,7 +320,7 @@ index a0a6e46..fc8a170 100644
  	    
  	    daemon->cachesize = size;
  	  }
-@@ -2386,6 +2415,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2386,6 +2417,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
      case 'T':         /* --local-ttl */
      case LOPT_NEGTTL: /* --neg-ttl */
      case LOPT_MAXTTL: /* --max-ttl */
@@ -319,7 +328,7 @@ index a0a6e46..fc8a170 100644
      case LOPT_MAXCTTL: /* --max-cache-ttl */
      case LOPT_AUTHTTL: /* --auth-ttl */
        {
-@@ -2396,6 +2426,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2396,6 +2428,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	  daemon->neg_ttl = (unsigned long)ttl;
  	else if (option == LOPT_MAXTTL)
  	  daemon->max_ttl = (unsigned long)ttl;
@@ -328,7 +337,7 @@ index a0a6e46..fc8a170 100644
  	else if (option == LOPT_MAXCTTL)
  	  daemon->max_cache_ttl = (unsigned long)ttl;
  	else if (option == LOPT_AUTHTTL)
-@@ -3815,6 +3847,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -3815,6 +3849,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	break;
        }
  #endif
@@ -349,7 +358,7 @@ index a0a6e46..fc8a170 100644
  		
      default:
        ret_err(_("unsupported option (check that dnsmasq was compiled with DHCP/TFTP/DNSSEC/DBus support)"));
-@@ -4144,7 +4190,24 @@ void read_servers_file(void)
+@@ -4144,7 +4192,24 @@ void read_servers_file(void)
    
    read_file(daemon->servers_file, f, LOPT_REV_SERV);
  }
@@ -375,7 +384,7 @@ index a0a6e46..fc8a170 100644
  
  #ifdef HAVE_DHCP
  void reread_dhcp(void)
-@@ -4258,6 +4321,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4258,6 +4323,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
    daemon->dhcp_server_port = DHCP_SERVER_PORT;
    daemon->default_resolv.is_default = 1;
    daemon->default_resolv.name = RESOLVFILE;
@@ -383,7 +392,7 @@ index a0a6e46..fc8a170 100644
    daemon->resolv_files = &daemon->default_resolv;
    daemon->username = CHUSER;
    daemon->runfile =  RUNFILE;
-@@ -4486,6 +4550,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4486,6 +4552,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
    if (daemon->if_names || daemon->if_except || daemon->if_addrs || daemon->authserver)
      reset_option_bool(OPT_LOCAL_SERVICE); 
  
