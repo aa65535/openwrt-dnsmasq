@@ -50,10 +50,10 @@ index 5cec918..568c4d4 100644
  
    /* if previous insertion failed give up now. */
 diff --git a/src/config.h b/src/config.h
-index 87f8f8a..64e0139 100644
+index 145820a..59137b3 100644
 --- a/src/config.h
 +++ b/src/config.h
-@@ -193,6 +193,14 @@ RESOLVFILE
+@@ -200,6 +200,14 @@ RESOLVFILE
  #   endif
  #endif
  
@@ -69,10 +69,10 @@ index 87f8f8a..64e0139 100644
  #   if defined(__ANDROID__)
  #      define RUNFILE "/data/dnsmasq.pid"
 diff --git a/src/dnsmasq.h b/src/dnsmasq.h
-index e70d10a..0f1bc0f 100644
+index a1ac1d1..196c6a0 100644
 --- a/src/dnsmasq.h
 +++ b/src/dnsmasq.h
-@@ -537,6 +537,13 @@ struct resolvc {
+@@ -542,6 +542,13 @@ struct resolvc {
    char *name;
  };
  
@@ -86,7 +86,7 @@ index e70d10a..0f1bc0f 100644
  /* adn-hosts parms from command-line (also dhcp-hostsfile and dhcp-optsfile */
  #define AH_DIR      1
  #define AH_INACTIVE 2
-@@ -570,6 +577,9 @@ struct hostsfile {
+@@ -575,6 +582,9 @@ struct hostsfile {
  #define FREC_DO_QUESTION       64
  #define FREC_ADDED_PHEADER    128
  #define FREC_CHECK_NOSIGN     256
@@ -96,7 +96,7 @@ index e70d10a..0f1bc0f 100644
  
  #ifdef HAVE_DNSSEC
  #define HASH_SIZE 20 /* SHA-1 digest size */
-@@ -894,6 +904,7 @@ extern struct daemon {
+@@ -899,6 +909,7 @@ extern struct daemon {
  
    unsigned int options, options2;
    struct resolvc default_resolv, *resolv_files;
@@ -104,7 +104,7 @@ index e70d10a..0f1bc0f 100644
    time_t last_resolv;
    char *servers_file;
    struct mx_srv_record *mxnames;
-@@ -927,7 +938,7 @@ extern struct daemon {
+@@ -932,7 +943,7 @@ extern struct daemon {
    int max_logs;  /* queue limit */
    int cachesize, ftabsize;
    int port, query_port, min_port;
@@ -113,7 +113,7 @@ index e70d10a..0f1bc0f 100644
    struct hostsfile *addn_hosts;
    struct dhcp_context *dhcp, *dhcp6;
    struct ra_interface *ra_interfaces;
-@@ -1128,6 +1139,7 @@ int legal_hostname(char *c);
+@@ -1134,6 +1145,7 @@ int legal_hostname(char *c);
  char *canonicalise(char *s, int *nomem);
  unsigned char *do_rfc1035_name(unsigned char *p, char *sval);
  void *safe_malloc(size_t size);
@@ -121,7 +121,7 @@ index e70d10a..0f1bc0f 100644
  void safe_pipe(int *fd, int read_noblock);
  void *whine_malloc(size_t size);
  int sa_len(union mysockaddr *addr);
-@@ -1155,6 +1167,7 @@ int read_write(int fd, unsigned char *packet, int size, int rw);
+@@ -1161,6 +1173,7 @@ int read_write(int fd, unsigned char *packet, int size, int rw);
  
  int wildcard_match(const char* wildcard, const char* match);
  int wildcard_matchn(const char* wildcard, const char* match, int num);
@@ -130,10 +130,10 @@ index e70d10a..0f1bc0f 100644
  /* log.c */
  void die(char *message, char *arg1, int exit_code);
 diff --git a/src/forward.c b/src/forward.c
-index 1a657bb..de806ef 100644
+index 3afd1b1..8e06a5a 100644
 --- a/src/forward.c
 +++ b/src/forward.c
-@@ -338,6 +338,9 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
+@@ -337,6 +337,9 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
  	  memcpy(forward->hash, hash, HASH_SIZE);
  	  forward->forwardall = 0;
  	  forward->flags = 0;
@@ -143,7 +143,7 @@ index 1a657bb..de806ef 100644
  	  if (norebind)
  	    forward->flags |= FREC_NOREBIND;
  	  if (header->hb4 & HB4_CD)
-@@ -530,6 +533,7 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -529,6 +532,7 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
    char **sets = 0;
    int munged = 0, is_sign;
    size_t plen; 
@@ -151,7 +151,7 @@ index 1a657bb..de806ef 100644
  
    (void)ad_reqd;
    (void) do_bit;
-@@ -624,8 +628,13 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -623,8 +627,13 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
  	  SET_RCODE(header, NOERROR);
  	  cache_secure = 0;
  	}
@@ -167,7 +167,7 @@ index 1a657bb..de806ef 100644
  	{
  	  my_syslog(LOG_WARNING, _("possible DNS-rebind attack detected: %s"), daemon->namebuff);
  	  munged = 1;
-@@ -667,6 +676,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -666,6 +675,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
        header->nscount = htons(0);
        header->arcount = htons(0);
      }
@@ -176,7 +176,7 @@ index 1a657bb..de806ef 100644
    
    /* the bogus-nxdomain stuff, doctor and NXDOMAIN->NODATA munging can all elide
       sections of the packet. Find the new length here and put back pseudoheader
-@@ -674,6 +685,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -673,6 +684,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
    return resize_packet(header, n, pheader, plen);
  }
  
@@ -185,7 +185,7 @@ index 1a657bb..de806ef 100644
  /* sets new last_server */
  void reply_query(int fd, int family, time_t now)
  {
-@@ -683,14 +696,18 @@ void reply_query(int fd, int family, time_t now)
+@@ -682,14 +695,18 @@ void reply_query(int fd, int family, time_t now)
    union mysockaddr serveraddr;
    struct frec *forward;
    socklen_t addrlen = sizeof(serveraddr);
@@ -205,7 +205,7 @@ index 1a657bb..de806ef 100644
    /* packet buffer overwritten */
    daemon->srv_save = NULL;
    
-@@ -781,6 +798,17 @@ void reply_query(int fd, int family, time_t now)
+@@ -780,6 +797,17 @@ void reply_query(int fd, int family, time_t now)
      {
        int check_rebind = 0, no_cache_dnssec = 0, cache_secure = 0;
  
@@ -223,7 +223,7 @@ index 1a657bb..de806ef 100644
        if (option_bool(OPT_NO_REBIND))
  	check_rebind = !(forward->flags & FREC_NOREBIND);
        
-@@ -994,9 +1022,12 @@ void reply_query(int fd, int family, time_t now)
+@@ -993,9 +1021,12 @@ void reply_query(int fd, int family, time_t now)
        else
  	header->hb4 &= ~HB4_CD;
        
@@ -240,20 +240,20 @@ index 1a657bb..de806ef 100644
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
 diff --git a/src/option.c b/src/option.c
-index a0a6e46..f9a1741 100644
+index 07e7d36..0061106 100644
 --- a/src/option.c
 +++ b/src/option.c
-@@ -146,6 +146,9 @@ struct myoption {
- #define LOPT_DNSSEC_CHECK  334
+@@ -147,6 +147,9 @@ struct myoption {
  #define LOPT_LOCAL_SERVICE 335
  #define LOPT_DNSSEC_TIME   336
-+#define LOPT_SPURIOUS_FILE 337
-+#define LOPT_SPURIOUS_IP   338
-+#define LOPT_MINCTTL       339
+ #define LOPT_LOOP_DETECT   337
++#define LOPT_SPURIOUS_FILE 338
++#define LOPT_SPURIOUS_IP   339
++#define LOPT_MINCTTL       340
  
  #ifdef HAVE_GETOPT_LONG
  static const struct option opts[] =  
-@@ -252,6 +255,7 @@ static const struct myoption opts[] =
+@@ -253,6 +256,7 @@ static const struct myoption opts[] =
      { "dhcp-broadcast", 2, 0, LOPT_BROADCAST },
      { "neg-ttl", 1, 0, LOPT_NEGTTL },
      { "max-ttl", 1, 0, LOPT_MAXTTL },
@@ -261,25 +261,25 @@ index a0a6e46..f9a1741 100644
      { "max-cache-ttl", 1, 0, LOPT_MAXCTTL },
      { "dhcp-alternate-port", 2, 0, LOPT_ALTPORT },
      { "dhcp-scriptuser", 1, 0, LOPT_SCRIPTUSR },
-@@ -297,6 +301,8 @@ static const struct myoption opts[] =
-     { "quiet-dhcp", 0, 0, LOPT_QUIET_DHCP },
+@@ -299,6 +303,8 @@ static const struct myoption opts[] =
      { "quiet-dhcp6", 0, 0, LOPT_QUIET_DHCP6 },
      { "quiet-ra", 0, 0, LOPT_QUIET_RA },
+     { "dns-loop-detect", 0, 0, LOPT_LOOP_DETECT },
 +    { "spurious-ip-file", 2, 0, LOPT_SPURIOUS_FILE },
 +    { "spurious-ip", 1, 0, LOPT_SPURIOUS_IP },
      { NULL, 0, 0, 0 }
    };
  
-@@ -454,6 +460,8 @@ static struct {
-   { LOPT_QUIET_DHCP6, OPT_QUIET_DHCP6, NULL, gettext_noop("Do not log routine DHCPv6."), NULL },
+@@ -457,6 +463,8 @@ static struct {
    { LOPT_QUIET_RA, OPT_QUIET_RA, NULL, gettext_noop("Do not log RA."), NULL },
    { LOPT_LOCAL_SERVICE, OPT_LOCAL_SERVICE, NULL, gettext_noop("Accept queries only from directly-connected networks"), NULL },
+   { LOPT_LOOP_DETECT, OPT_LOOP_DETECT, NULL, gettext_noop("Detect and remove DNS forwarding loops"), NULL },
 +  { LOPT_SPURIOUS_FILE, ARG_DUP, "<path>", gettext_noop("Specify path to spurious-ip file."), NULL },
 +  { LOPT_SPURIOUS_IP, ARG_DUP, "<ipaddr>", gettext_noop("Specify spurious ip."), NULL },
    { 0, 0, NULL, NULL, NULL }
  }; 
  
-@@ -695,6 +703,29 @@ static void do_usage(void)
+@@ -698,6 +706,29 @@ static void do_usage(void)
      }
  }
  
@@ -309,7 +309,7 @@ index a0a6e46..f9a1741 100644
  #define ret_err(x) do { strcpy(errstr, (x)); return 0; } while (0)
  
  char *parse_server(char *arg, union mysockaddr *addr, union mysockaddr *source_addr, char *interface, int *flags)
-@@ -2334,8 +2365,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2340,8 +2371,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	    
  	    if (size < 0)
  	      size = 0;
@@ -320,7 +320,7 @@ index a0a6e46..f9a1741 100644
  	    
  	    daemon->cachesize = size;
  	  }
-@@ -2386,6 +2417,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2392,6 +2423,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
      case 'T':         /* --local-ttl */
      case LOPT_NEGTTL: /* --neg-ttl */
      case LOPT_MAXTTL: /* --max-ttl */
@@ -328,7 +328,7 @@ index a0a6e46..f9a1741 100644
      case LOPT_MAXCTTL: /* --max-cache-ttl */
      case LOPT_AUTHTTL: /* --auth-ttl */
        {
-@@ -2396,6 +2428,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2402,6 +2434,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	  daemon->neg_ttl = (unsigned long)ttl;
  	else if (option == LOPT_MAXTTL)
  	  daemon->max_ttl = (unsigned long)ttl;
@@ -337,7 +337,7 @@ index a0a6e46..f9a1741 100644
  	else if (option == LOPT_MAXCTTL)
  	  daemon->max_cache_ttl = (unsigned long)ttl;
  	else if (option == LOPT_AUTHTTL)
-@@ -3815,6 +3849,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -3821,6 +3855,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	break;
        }
  #endif
@@ -358,7 +358,7 @@ index a0a6e46..f9a1741 100644
  		
      default:
        ret_err(_("unsupported option (check that dnsmasq was compiled with DHCP/TFTP/DNSSEC/DBus support)"));
-@@ -4144,7 +4192,24 @@ void read_servers_file(void)
+@@ -4150,7 +4198,24 @@ void read_servers_file(void)
    
    read_file(daemon->servers_file, f, LOPT_REV_SERV);
  }
@@ -384,7 +384,7 @@ index a0a6e46..f9a1741 100644
  
  #ifdef HAVE_DHCP
  void reread_dhcp(void)
-@@ -4258,6 +4323,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4264,6 +4329,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
    daemon->dhcp_server_port = DHCP_SERVER_PORT;
    daemon->default_resolv.is_default = 1;
    daemon->default_resolv.name = RESOLVFILE;
@@ -392,7 +392,7 @@ index a0a6e46..f9a1741 100644
    daemon->resolv_files = &daemon->default_resolv;
    daemon->username = CHUSER;
    daemon->runfile =  RUNFILE;
-@@ -4486,6 +4552,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4493,6 +4559,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
    if (daemon->if_names || daemon->if_except || daemon->if_addrs || daemon->authserver)
      reset_option_bool(OPT_LOCAL_SERVICE); 
  
@@ -443,10 +443,10 @@ index 25ac167..9f6ced3 100644
  		      if (newc && cpp)
  			{
 diff --git a/src/util.c b/src/util.c
-index 660347f..786f134 100644
+index df751c7..1fa2738 100644
 --- a/src/util.c
 +++ b/src/util.c
-@@ -233,6 +233,17 @@ void *safe_malloc(size_t size)
+@@ -245,6 +245,17 @@ void *safe_malloc(size_t size)
    return ret;
  }    
  
@@ -464,7 +464,7 @@ index 660347f..786f134 100644
  void safe_pipe(int *fd, int read_noblock)
  {
    if (pipe(fd) == -1 || 
-@@ -634,3 +645,15 @@ int wildcard_matchn(const char* wildcard, const char* match, int num)
+@@ -646,3 +657,15 @@ int wildcard_matchn(const char* wildcard, const char* match, int num)
  
    return (!num) || (*wildcard == *match);
  }
