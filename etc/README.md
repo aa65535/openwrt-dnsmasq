@@ -1,8 +1,8 @@
 OpenWrt's Dnsmasq Config
 ===
 
-此配置需要搭配 [ss-tunnel][1] 使用   
-Dnsmasq 会自动载入 `/etc/dnsmasq.d` 中的配置文件:
+此配置需要搭配 `ss-tunnel` 使用  
+Dnsmasq 会自动载入 `/etc/dnsmasq.d` 中的配置文件  
 
  文件名               | 简介
 ----------------------|-------------------------------
@@ -10,5 +10,12 @@ Dnsmasq 会自动载入 `/etc/dnsmasq.d` 中的配置文件:
 `server-custom.conf`  | 强制指定域名的 DNS 查询走 ss 流量   
 `spurious-ips.conf`   | GFW 返回的虚假 IP 列表   
 
+**配置步骤**
 
-  [1]: https://sourceforge.net/p/openwrt-dist/wiki/Usage/
+  1. 依次安装 `dnsmasq` `shadowsocks-libev` `shadowsocks-libev-extra`
+
+  2. 根据此配置示例建立 Dnsmasq 配置
+
+  3. 使用 `/etc/init.d/shadowsocks start` 和 `/etc/init.d/dnsmasq start` 启动
+
+  4. enjoy it!
