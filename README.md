@@ -63,7 +63,9 @@ OpenWrt's Dnsmasq Patch & Makefile
 配置示例
 ---
 
- - [/etc/dnsmasq.conf][4]
+ - [默认配置文件][4]
+ 
+ - [与 ss-tunnel 搭配][8]
 
 相关项目
 ---
@@ -82,3 +84,4 @@ OpenWrt's Dnsmasq Patch & Makefile
   [5]: https://github.com/aa65535/openwrt-chinadns
   [6]: https://github.com/aa65535/openwrt-dnsmasq
   [7]: https://github.com/aa65535/openwrt-shadowsocks
+  [8]: https://github.com/aa65535/openwrt-dnsmasq/tree/master/etc
