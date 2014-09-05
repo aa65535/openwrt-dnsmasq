@@ -65,8 +65,20 @@ OpenWrt's Dnsmasq Patch & Makefile
 
  - [/etc/dnsmasq.conf][4]
 
+相关项目
+---
+
+ Name                     | Description
+ -------------------------|-----------------------------------
+ [openwrt-chinadns][5]    | OpenWrt's ChinaDNS-C Makefile
+ [openwrt-dnsmasq][6]     | OpenWrt's Dnsmasq Patch & Makefile
+ [openwrt-shadowsocks][7] | OpenWrt's ShadowSocks Makefile
+
 
   [1]: https://github.com/aa65535/dnsmasq
   [2]: https://github.com/styx-hy/dnsmasq-chinadns
   [3]: https://sourceforge.net/projects/openwrt-dist/files/dnsmasq/
   [4]: https://github.com/aa65535/openwrt-dnsmasq/blob/master/files/dnsmasq.conf
+  [5]: https://github.com/aa65535/openwrt-chinadns
+  [6]: https://github.com/aa65535/openwrt-dnsmasq
+  [7]: https://github.com/aa65535/openwrt-shadowsocks
