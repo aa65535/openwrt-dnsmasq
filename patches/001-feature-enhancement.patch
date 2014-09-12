@@ -1,5 +1,5 @@
 diff --git a/dnsmasq.conf.example b/dnsmasq.conf.example
-index 206f4d1..fddfb1f 100644
+index 83924fc..1e3824e 100644
 --- a/dnsmasq.conf.example
 +++ b/dnsmasq.conf.example
 @@ -25,6 +25,13 @@
@@ -240,7 +240,7 @@ index 3afd1b1..8e06a5a 100644
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
 diff --git a/src/option.c b/src/option.c
-index 07e7d36..0061106 100644
+index 45d8875..0ded638 100644
 --- a/src/option.c
 +++ b/src/option.c
 @@ -147,6 +147,9 @@ struct myoption {
@@ -309,7 +309,7 @@ index 07e7d36..0061106 100644
  #define ret_err(x) do { strcpy(errstr, (x)); return 0; } while (0)
  
  char *parse_server(char *arg, union mysockaddr *addr, union mysockaddr *source_addr, char *interface, int *flags)
-@@ -2340,8 +2371,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2364,8 +2395,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	    
  	    if (size < 0)
  	      size = 0;
@@ -320,7 +320,7 @@ index 07e7d36..0061106 100644
  	    
  	    daemon->cachesize = size;
  	  }
-@@ -2392,6 +2423,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2416,6 +2447,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
      case 'T':         /* --local-ttl */
      case LOPT_NEGTTL: /* --neg-ttl */
      case LOPT_MAXTTL: /* --max-ttl */
@@ -328,7 +328,7 @@ index 07e7d36..0061106 100644
      case LOPT_MAXCTTL: /* --max-cache-ttl */
      case LOPT_AUTHTTL: /* --auth-ttl */
        {
-@@ -2402,6 +2434,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2426,6 +2458,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	  daemon->neg_ttl = (unsigned long)ttl;
  	else if (option == LOPT_MAXTTL)
  	  daemon->max_ttl = (unsigned long)ttl;
@@ -337,7 +337,7 @@ index 07e7d36..0061106 100644
  	else if (option == LOPT_MAXCTTL)
  	  daemon->max_cache_ttl = (unsigned long)ttl;
  	else if (option == LOPT_AUTHTTL)
-@@ -3821,6 +3855,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -3845,6 +3879,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
  	break;
        }
  #endif
@@ -358,7 +358,7 @@ index 07e7d36..0061106 100644
  		
      default:
        ret_err(_("unsupported option (check that dnsmasq was compiled with DHCP/TFTP/DNSSEC/DBus support)"));
-@@ -4150,7 +4198,24 @@ void read_servers_file(void)
+@@ -4174,7 +4222,24 @@ void read_servers_file(void)
    
    read_file(daemon->servers_file, f, LOPT_REV_SERV);
  }
@@ -384,7 +384,7 @@ index 07e7d36..0061106 100644
  
  #ifdef HAVE_DHCP
  void reread_dhcp(void)
-@@ -4264,6 +4329,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4288,6 +4353,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
    daemon->dhcp_server_port = DHCP_SERVER_PORT;
    daemon->default_resolv.is_default = 1;
    daemon->default_resolv.name = RESOLVFILE;
@@ -392,7 +392,7 @@ index 07e7d36..0061106 100644
    daemon->resolv_files = &daemon->default_resolv;
    daemon->username = CHUSER;
    daemon->runfile =  RUNFILE;
-@@ -4493,6 +4559,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4517,6 +4583,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
    if (daemon->if_names || daemon->if_except || daemon->if_addrs || daemon->authserver)
      reset_option_bool(OPT_LOCAL_SERVICE); 
  
