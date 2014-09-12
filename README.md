@@ -55,7 +55,6 @@ OpenWrt's Dnsmasq Patch & Makefile
  > # 打 Patch
  > cd dnsmasq
  > patch -p1 < ../openwrt-dnsmasq/patches/001-feature-enhancement.patch
- > patch -p1 < ../openwrt-dnsmasq/patches/111-add-version-info.patch
  > # 开始编译
  > make
  > ```
