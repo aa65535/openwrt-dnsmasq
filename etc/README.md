@@ -12,10 +12,13 @@ Dnsmasq 会自动载入 `/etc/dnsmasq.d` 中的配置文件
 
 **配置步骤**
 
-  1. 依次安装 `dnsmasq` `shadowsocks-libev` `shadowsocks-libev-extra`
+  1. 安装 [dnsmasq][0] + [shadowsocks-libev-spec][1]
 
   2. 根据此配置示例建立 Dnsmasq 配置
 
   3. 使用 `/etc/init.d/shadowsocks start` 和 `/etc/init.d/dnsmasq start` 启动
 
   4. enjoy it!
+
+  [0]: https://sourceforge.net/projects/openwrt-dist/files/dnsmasq/
+  [1]: https://sourceforge.net/projects/openwrt-dist/files/shadowsocks-libev/

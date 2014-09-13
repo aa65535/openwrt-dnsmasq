@@ -16,7 +16,6 @@ OpenWrt's Dnsmasq Patch & Makefile
  >     download($mirror);
  >     -f "$target/$filename" and $ok = 1;
  > }
- > 
  > ```
 
 增强功能
