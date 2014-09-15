@@ -3,17 +3,16 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=dnsmasq
 PKG_VERSION:=2.72
 PKG_RELEASE:=4
+PKG_SHA:=51943369e36ffb30164d13ab75e7ca3bab9f7ed7
 
-PKG_SOURCE:=master.zip
+PKG_SOURCE:=$(PKG_SHA).zip
 PKG_SOURCE_URL:=https://github.com/aa65535/dnsmasq/archive
 PKG_CAT:=unzip
-
-$(eval $(shell $(RM) $(DL_DIR)/$(PKG_SOURCE)))
 
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(BUILD_VARIANT)/$(PKG_NAME)-master
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_SHA)
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -23,28 +22,15 @@ include $(INCLUDE_DIR)/package.mk
 define Package/dnsmasq/Default
 	SECTION:=net
 	CATEGORY:=Base system
-	TITLE:=DNS and DHCP server
+	TITLE:=DNS and DHCP server $(3)
 	URL:=https://github.com/aa65535/dnsmasq
+	DEPENDS:=$(2)
+	VARIANT:=$(1)
 endef
 
-define Package/dnsmasq
-$(call Package/dnsmasq/Default)
-	VARIANT:=nodhcpv6
-endef
-
-define Package/dnsmasq-dhcpv6
-	$(call Package/dnsmasq/Default)
-	TITLE += (with DHCPv6 support)
-	DEPENDS:=@IPV6 +kmod-ipv6
-	VARIANT:=dhcpv6
-endef
-
-define Package/dnsmasq-full
-	$(call Package/dnsmasq/Default)
-	TITLE += (with DNSSEC, DHCPv6, Auth DNS, IPSET)
-	DEPENDS:=@IPV6 +kmod-ipv6 +libnettle
-	VARIANT:=full
-endef
+Package/dnsmasq = $(call Package/dnsmasq/Default,nodhcpv6)
+Package/dnsmasq-dhcpv6 = $(call Package/dnsmasq/Default,dhcpv6,@IPV6 +kmod-ipv6,(with DHCPv6 support))
+Package/dnsmasq-full = $(call Package/dnsmasq/Default,full,@IPV6 +kmod-ipv6 +libnettle,(with DNSSEC, DHCPv6, Auth DNS, IPSET))
 
 define Package/dnsmasq/description
 It is intended to provide coupled DNS and DHCP service to a LAN.
@@ -93,7 +79,7 @@ MAKE_FLAGS := \
 
 define Package/dnsmasq/install
 	$(INSTALL_DIR) $(1)/usr/sbin
-	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/sbin/dnsmasq $(1)/usr/sbin/
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/dnsmasq $(1)/usr/sbin/
 	$(INSTALL_DIR) $(1)/etc/config
 	$(INSTALL_CONF) ./files/dhcp.conf $(1)/etc/config/dhcp
 	$(INSTALL_CONF) ./files/dnsmasq.conf $(1)/etc/dnsmasq.conf
@@ -103,10 +89,10 @@ define Package/dnsmasq/install
 	$(INSTALL_DATA) ./files/dnsmasq.hotplug $(1)/etc/hotplug.d/iface/25-dnsmasq
 endef
 
-Package/dnsmasq-dhcpv6/install = $(Package/dnsmasq/install)
+Package/dnsmasq-dhcpv6/install = $(call Package/dnsmasq/install,$(1))
 
 define Package/dnsmasq-full/install
-$(call Package/dnsmasq/install,$(1))
+	$(call Package/dnsmasq/install,$(1))
 	$(INSTALL_DIR) $(1)/usr/share/dnsmasq
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/trust-anchors.conf $(1)/usr/share/dnsmasq
 endef
