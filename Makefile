@@ -8,6 +8,8 @@ PKG_SOURCE:=master.zip
 PKG_SOURCE_URL:=https://github.com/aa65535/dnsmasq/archive
 PKG_CAT:=unzip
 
+$(eval $(shell $(RM) $(DL_DIR)/$(PKG_SOURCE)))
+
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
 
