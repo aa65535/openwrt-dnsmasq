@@ -6,7 +6,7 @@ OpenWrt's Dnsmasq Patch & Makefile
 增强功能
 ---
 
- - 添加 `防 DNS 劫持` 功能, 来自 [dnsmasq-chinadns][2]
+ - 添加 `DNS 反劫持` 功能, 来自 [dnsmasq-chinadns][2]
 
  - 添加 `--min-cache-ttl` 选项, 设置 DNS 缓存最小有效期
 
@@ -15,19 +15,19 @@ OpenWrt's Dnsmasq Patch & Makefile
 编译说明
 ---
 
- - OpenWrt 平台的编译, [预编译 IPK 下载][3]
+ - 从 OpenWrt 的 SDK 编译, [预编译 IPK 下载][3]
 
  > ```
- > # 删除旧的 Patch & Makefile
- > rm -rf package/network/services/dnsmasq
- > # 下载新的 Patch & Makefile
- > git clone https://github.com/aa65535/openwrt-dnsmasq.git package/network/services/dnsmasq
+ > # 此处下载 SDK: http://downloads.openwrt.org/snapshots/trunk/
+ > # 以 ar71xx 平台为例
+ > tar xjf OpenWrt-SDK-ar71xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2
+ > cd OpenWrt-SDK-ar71xx-*
+ > # 下载 Patch & Makefile
+ > git clone https://github.com/aa65535/openwrt-dnsmasq.git package/dnsmasq
  > # 选择要编译的包 Base system -> dnsmasq
  > make menuconfig
- > # 开始编译 Dnsmasq
- > rm -f dl/master.zip && make package/network/services/dnsmasq/compile V=99
- > # 若上面语句编译出错 需要先使用下面语句编译出 Toolchain
- > make V=99
+ > # 开始编译
+ > make package/dnsmasq/compile V=99
  > ```
 
  - 同样可以将 Patch 应用到 [dnsmasq][1] 后编译出其他平台的可执行文件
@@ -56,7 +56,6 @@ OpenWrt's Dnsmasq Patch & Makefile
  Name                     | Description
  -------------------------|-----------------------------------
  [openwrt-chinadns][5]    | OpenWrt's ChinaDNS-C Makefile
- [openwrt-dnsmasq][6]     | OpenWrt's Dnsmasq Patch & Makefile
  [openwrt-shadowsocks][7] | OpenWrt's ShadowSocks Makefile
 
 

@@ -3,16 +3,15 @@ include $(TOPDIR)/rules.mk
 PKG_NAME:=dnsmasq
 PKG_VERSION:=2.72
 PKG_RELEASE:=4
-PKG_SHA:=51943369e36ffb30164d13ab75e7ca3bab9f7ed7
 
-PKG_SOURCE:=$(PKG_SHA).zip
+PKG_SOURCE:=master.zip
 PKG_SOURCE_URL:=https://github.com/aa65535/dnsmasq/archive
 PKG_CAT:=unzip
 
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
 
-PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(BUILD_VARIANT)/$(PKG_NAME)-$(PKG_SHA)
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(BUILD_VARIANT)/$(PKG_NAME)-master
 
 PKG_INSTALL:=1
 PKG_BUILD_PARALLEL:=1
@@ -97,6 +96,7 @@ define Package/dnsmasq-full/install
 	$(INSTALL_DATA) $(PKG_BUILD_DIR)/trust-anchors.conf $(1)/usr/share/dnsmasq
 endef
 
+$(shell $(RM) $(DL_DIR)/$(PKG_SOURCE))
 $(eval $(call BuildPackage,dnsmasq))
 $(eval $(call BuildPackage,dnsmasq-dhcpv6))
 $(eval $(call BuildPackage,dnsmasq-full))
