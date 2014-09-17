@@ -2,7 +2,7 @@ OpenWrt's Dnsmasq Config
 ===
 
 此配置需要搭配 `ss-tunnel` 使用  
-Dnsmasq 会自动载入 `/etc/dnsmasq.d` 中的配置文件  
+dnsmasq 会自动载入 `/etc/dnsmasq.d` 中的配置文件  
 
  文件名               | 简介
 ----------------------|-------------------------------
@@ -12,9 +12,9 @@ Dnsmasq 会自动载入 `/etc/dnsmasq.d` 中的配置文件
 
 **配置步骤**
 
-  1. 安装 [dnsmasq][0] + [shadowsocks-libev-spec][1]
+  1. 安装 [dnsmasq-chinadns][0] + [shadowsocks-libev-spec][1]
 
-  2. 根据此配置示例建立 Dnsmasq 配置
+  2. 根据此配置示例建立 dnsmasq 配置
 
   3. 使用 `/etc/init.d/shadowsocks start` 和 `/etc/init.d/dnsmasq start` 启动
 
