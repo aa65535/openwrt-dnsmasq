@@ -2,7 +2,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dnsmasq
 PKG_VERSION:=2.72
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=master.zip
 PKG_SOURCE_URL:=https://github.com/aa65535/dnsmasq/archive
