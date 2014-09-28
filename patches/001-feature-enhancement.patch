@@ -1,5 +1,5 @@
 diff --git a/dnsmasq.conf.example b/dnsmasq.conf.example
-index 83924fc..1e3824e 100644
+index 6b00bd3..adb2b18 100644
 --- a/dnsmasq.conf.example
 +++ b/dnsmasq.conf.example
 @@ -25,6 +25,13 @@
