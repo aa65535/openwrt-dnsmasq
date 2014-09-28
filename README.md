@@ -15,10 +15,9 @@ OpenWrt's Dnsmasq Patch & Makefile
 编译说明
 ---
 
- - 从 OpenWrt 的 SDK 编译, [预编译 IPK 下载][3]
+ - 从 OpenWrt 的 [SDK][S] 编译, [预编译 IPK 下载][3]
 
- > ```
- > # 此处下载 SDK: http://downloads.openwrt.org/snapshots/trunk/
+ > ```bash
  > # 以 ar71xx 平台为例
  > tar xjf OpenWrt-SDK-ar71xx-for-linux-x86_64-gcc-4.8-linaro_uClibc-0.9.33.2.tar.bz2
  > cd OpenWrt-SDK-ar71xx-*
@@ -32,7 +31,7 @@ OpenWrt's Dnsmasq Patch & Makefile
 
  - 同样可以将 Patch 应用到 [dnsmasq][1] 后编译出其他平台的可执行文件
 
- > ```
+ > ```bash
  > # 下载代码
  > git clone https://github.com/aa65535/dnsmasq.git
  > git clone https://github.com/aa65535/openwrt-dnsmasq.git
@@ -67,3 +66,4 @@ OpenWrt's Dnsmasq Patch & Makefile
   [6]: https://github.com/aa65535/openwrt-dnsmasq
   [7]: https://github.com/aa65535/openwrt-shadowsocks
   [8]: https://github.com/aa65535/openwrt-dnsmasq/tree/master/etc
+  [S]: http://downloads.openwrt.org/snapshots/trunk/
