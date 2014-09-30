@@ -1,7 +1,7 @@
 OpenWrt's Dnsmasq Patch & Makefile
 ===
 
- > 编译时默认从 [dnsmasq][1] 下载最新源码
+ > 编译时默认从 [aa65535/dnsmasq][1] 下载最新源码
 
 增强功能
 ---
