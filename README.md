@@ -56,6 +56,7 @@ OpenWrt's Dnsmasq Patch & Makefile
  -------------------------|-----------------------------------
  [openwrt-chinadns][5]    | OpenWrt's ChinaDNS-C Makefile
  [openwrt-shadowsocks][7] | OpenWrt's ShadowSocks Makefile
+ [openwrt-shadowvpn][6]   | OpenWrt's ShadowVPN Makefile
 
 
   [1]: https://github.com/aa65535/dnsmasq
@@ -63,7 +64,7 @@ OpenWrt's Dnsmasq Patch & Makefile
   [3]: https://sourceforge.net/projects/openwrt-dist/files/dnsmasq/
   [4]: https://github.com/aa65535/openwrt-dnsmasq/blob/master/files/dnsmasq.conf
   [5]: https://github.com/aa65535/openwrt-chinadns
-  [6]: https://github.com/aa65535/openwrt-dnsmasq
+  [6]: https://github.com/aa65535/openwrt-shadowvpn
   [7]: https://github.com/aa65535/openwrt-shadowsocks
   [8]: https://github.com/aa65535/openwrt-dnsmasq/tree/master/etc
   [S]: http://downloads.openwrt.org/snapshots/trunk/
