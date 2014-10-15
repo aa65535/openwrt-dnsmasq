@@ -10,8 +10,6 @@ OpenWrt's Dnsmasq Patch & Makefile
 
  - 添加 `--min-cache-ttl` 选项, 设置 DNS 缓存最小有效期
 
- - 调整 `--cache-size` 选项, 设置范围 0 ~ 65535
-
 编译说明
 ---
 

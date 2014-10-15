@@ -1,5 +1,5 @@
 diff --git a/dnsmasq.conf.example b/dnsmasq.conf.example
-index 1bd305d..94a08d3 100644
+index 1bd305d..2504214 100644
 --- a/dnsmasq.conf.example
 +++ b/dnsmasq.conf.example
 @@ -25,6 +25,13 @@
@@ -16,15 +16,6 @@ index 1bd305d..94a08d3 100644
  # Replies which are not DNSSEC signed may be legitimate, because the domain
  # is unsigned, or may be forgeries. Setting this option tells dnsmasq to
  # check that an unsigned reply is OK, by finding a secure proof that a DS 
-@@ -535,7 +542,7 @@
- # if there is one.
- #dhcp-script=/bin/echo
- 
--# Set the cachesize here.
-+# Set the cachesize here, maximum value 65535.
- #cache-size=150
- 
- # If you want to disable negative caching, uncomment this.
 @@ -548,6 +555,10 @@
  # seconds) here.
  #local-ttl=
@@ -240,7 +231,7 @@ index 2cf29eb..ae41235 100644
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
 diff --git a/src/option.c b/src/option.c
-index b08e98e..b3a9c03 100644
+index b08e98e..2611bea 100644
 --- a/src/option.c
 +++ b/src/option.c
 @@ -147,6 +147,9 @@ struct myoption {
@@ -309,17 +300,6 @@ index b08e98e..b3a9c03 100644
  #define ret_err(x) do { strcpy(errstr, (x)); return 0; } while (0)
  
  char *parse_server(char *arg, union mysockaddr *addr, union mysockaddr *source_addr, char *interface, int *flags)
-@@ -2372,8 +2403,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
- 	    
- 	    if (size < 0)
- 	      size = 0;
--	    else if (size > 10000)
--	      size = 10000;
-+	    else if (size > 65535)
-+	      size = 65535;
- 	    
- 	    daemon->cachesize = size;
- 	  }
 @@ -2424,6 +2455,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
      case 'T':         /* --local-ttl */
      case LOPT_NEGTTL: /* --neg-ttl */
