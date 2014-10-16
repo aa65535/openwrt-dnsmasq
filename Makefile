@@ -7,6 +7,7 @@ PKG_RELEASE:=6
 PKG_SOURCE:=master.zip
 PKG_SOURCE_URL:=https://github.com/aa65535/dnsmasq/archive
 PKG_CAT:=unzip
+PKG_MAINTAINER:=Simon Kelley <simon@thekelleys.org.uk>
 
 PKG_LICENSE:=GPLv2
 PKG_LICENSE_FILES:=COPYING
