@@ -9,8 +9,8 @@ PKG_SOURCE_URL:=https://github.com/aa65535/dnsmasq/archive
 PKG_CAT:=unzip
 PKG_MAINTAINER:=Simon Kelley <simon@thekelleys.org.uk>
 
-PKG_LICENSE:=GPLv2
-PKG_LICENSE_FILES:=COPYING
+PKG_LICENSE:=GPL-2.0 GPL-3.0
+PKG_LICENSE_FILES:=COPYING COPYING-v3
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)/$(BUILD_VARIANT)/$(PKG_NAME)-master
 
