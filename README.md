@@ -55,6 +55,7 @@ OpenWrt's Dnsmasq Patch & Makefile
  [openwrt-chinadns][5]    | OpenWrt's ChinaDNS-C Makefile
  [openwrt-shadowsocks][7] | OpenWrt's ShadowSocks Makefile
  [openwrt-shadowvpn][6]   | OpenWrt's ShadowVPN Makefile
+ [openwrt-dist-luci][L]   | LuCI Applications of OpenWrt-dist
 
 
   [1]: https://github.com/aa65535/dnsmasq
@@ -66,3 +67,4 @@ OpenWrt's Dnsmasq Patch & Makefile
   [7]: https://github.com/aa65535/openwrt-shadowsocks
   [8]: https://github.com/aa65535/openwrt-dnsmasq/tree/master/etc
   [S]: http://downloads.openwrt.org/snapshots/trunk/
+  [L]: https://github.com/aa65535/openwrt-dist-luci
