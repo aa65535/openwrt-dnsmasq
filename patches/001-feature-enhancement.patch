@@ -1,7 +1,6 @@
-diff --git a/dnsmasq.conf.example b/dnsmasq.conf.example
-index 1bd305d..2504214 100644
---- a/dnsmasq.conf.example
-+++ b/dnsmasq.conf.example
+diff -uNr a/dnsmasq.conf.example b/dnsmasq.conf.example
+--- a/dnsmasq.conf.example	Wed Sep 24 05:16:16 2014
++++ b/dnsmasq.conf.example	Sat Dec 20 16:57:58 2014
 @@ -25,6 +25,13 @@
  #conf-file=%%PREFIX%%/share/dnsmasq/trust-anchors.conf
  #dnssec
@@ -16,22 +15,21 @@ index 1bd305d..2504214 100644
  # Replies which are not DNSSEC signed may be legitimate, because the domain
  # is unsigned, or may be forgeries. Setting this option tells dnsmasq to
  # check that an unsigned reply is OK, by finding a secure proof that a DS 
-@@ -548,6 +555,10 @@
+@@ -547,6 +554,10 @@
+ # server for potentially stale date, you can set a time-to-live (in
  # seconds) here.
  #local-ttl=
- 
++
 +# Set a minimum TTL value for entries in the cache.
 +# For example min-cache-ttl=300 (ie: 5 minutes).
 +#min-cache-ttl=
-+
+ 
  # If you want dnsmasq to detect attempts by Verisign to send queries
  # to unregistered .com and .net hosts to its sitefinder service and
- # have dnsmasq instead return the correct NXDOMAIN response, uncomment
-diff --git a/src/cache.c b/src/cache.c
-index 2c3a498..b78ddcc 100644
---- a/src/cache.c
-+++ b/src/cache.c
-@@ -464,6 +464,8 @@ struct crec *cache_insert(char *name, struct all_addr *addr,
+diff -uNr a/src/cache.c b/src/cache.c
+--- a/src/cache.c	Wed Sep 24 05:16:16 2014
++++ b/src/cache.c	Sat Dec 20 16:57:58 2014
+@@ -464,6 +464,8 @@
        /* Don;t mess with TTL for DNSSEC records. */
        if (daemon->max_cache_ttl != 0 && daemon->max_cache_ttl < ttl)
  	ttl = daemon->max_cache_ttl;
@@ -40,11 +38,10 @@ index 2c3a498..b78ddcc 100644
      }
  
    /* if previous insertion failed give up now. */
-diff --git a/src/config.h b/src/config.h
-index 145820a..59137b3 100644
---- a/src/config.h
-+++ b/src/config.h
-@@ -200,6 +200,14 @@ RESOLVFILE
+diff -uNr a/src/config.h b/src/config.h
+--- a/src/config.h	Wed Sep 24 05:16:16 2014
++++ b/src/config.h	Sat Dec 20 16:57:58 2014
+@@ -200,6 +200,14 @@
  #   endif
  #endif
  
@@ -59,11 +56,10 @@ index 145820a..59137b3 100644
  #ifndef RUNFILE
  #   if defined(__ANDROID__)
  #      define RUNFILE "/data/dnsmasq.pid"
-diff --git a/src/dnsmasq.h b/src/dnsmasq.h
-index e74b15a..88dbecb 100644
---- a/src/dnsmasq.h
-+++ b/src/dnsmasq.h
-@@ -543,6 +543,13 @@ struct resolvc {
+diff -uNr a/src/dnsmasq.h b/src/dnsmasq.h
+--- a/src/dnsmasq.h	Wed Sep 24 05:16:16 2014
++++ b/src/dnsmasq.h	Sat Dec 20 16:57:58 2014
+@@ -543,6 +543,13 @@
    char *name;
  };
  
@@ -77,7 +73,7 @@ index e74b15a..88dbecb 100644
  /* adn-hosts parms from command-line (also dhcp-hostsfile and dhcp-optsfile */
  #define AH_DIR      1
  #define AH_INACTIVE 2
-@@ -576,6 +583,9 @@ struct hostsfile {
+@@ -576,6 +583,9 @@
  #define FREC_DO_QUESTION       64
  #define FREC_ADDED_PHEADER    128
  #define FREC_CHECK_NOSIGN     256
@@ -87,7 +83,7 @@ index e74b15a..88dbecb 100644
  
  #ifdef HAVE_DNSSEC
  #define HASH_SIZE 20 /* SHA-1 digest size */
-@@ -900,6 +910,7 @@ extern struct daemon {
+@@ -900,6 +910,7 @@
  
    unsigned int options, options2;
    struct resolvc default_resolv, *resolv_files;
@@ -95,7 +91,7 @@ index e74b15a..88dbecb 100644
    time_t last_resolv;
    char *servers_file;
    struct mx_srv_record *mxnames;
-@@ -933,7 +944,7 @@ extern struct daemon {
+@@ -933,7 +944,7 @@
    int max_logs;  /* queue limit */
    int cachesize, ftabsize;
    int port, query_port, min_port;
@@ -104,7 +100,7 @@ index e74b15a..88dbecb 100644
    struct hostsfile *addn_hosts;
    struct dhcp_context *dhcp, *dhcp6;
    struct ra_interface *ra_interfaces;
-@@ -1135,6 +1146,7 @@ int legal_hostname(char *c);
+@@ -1135,6 +1146,7 @@
  char *canonicalise(char *s, int *nomem);
  unsigned char *do_rfc1035_name(unsigned char *p, char *sval);
  void *safe_malloc(size_t size);
@@ -112,7 +108,7 @@ index e74b15a..88dbecb 100644
  void safe_pipe(int *fd, int read_noblock);
  void *whine_malloc(size_t size);
  int sa_len(union mysockaddr *addr);
-@@ -1162,6 +1174,7 @@ int read_write(int fd, unsigned char *packet, int size, int rw);
+@@ -1162,6 +1174,7 @@
  
  int wildcard_match(const char* wildcard, const char* match);
  int wildcard_matchn(const char* wildcard, const char* match, int num);
@@ -120,11 +116,10 @@ index e74b15a..88dbecb 100644
  
  /* log.c */
  void die(char *message, char *arg1, int exit_code);
-diff --git a/src/forward.c b/src/forward.c
-index 2cf29eb..ae41235 100644
---- a/src/forward.c
-+++ b/src/forward.c
-@@ -337,6 +337,9 @@ static int forward_query(int udpfd, union mysockaddr *udpaddr,
+diff -uNr a/src/forward.c b/src/forward.c
+--- a/src/forward.c	Wed Sep 24 05:16:16 2014
++++ b/src/forward.c	Sat Dec 20 16:57:58 2014
+@@ -337,6 +337,9 @@
  	  memcpy(forward->hash, hash, HASH_SIZE);
  	  forward->forwardall = 0;
  	  forward->flags = 0;
@@ -134,7 +129,7 @@ index 2cf29eb..ae41235 100644
  	  if (norebind)
  	    forward->flags |= FREC_NOREBIND;
  	  if (header->hb4 & HB4_CD)
-@@ -529,6 +532,7 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -529,6 +532,7 @@
    char **sets = 0;
    int munged = 0, is_sign;
    size_t plen; 
@@ -142,7 +137,7 @@ index 2cf29eb..ae41235 100644
  
    (void)ad_reqd;
    (void) do_bit;
-@@ -623,8 +627,13 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -623,8 +627,13 @@
  	  SET_RCODE(header, NOERROR);
  	  cache_secure = 0;
  	}
@@ -158,7 +153,7 @@ index 2cf29eb..ae41235 100644
  	{
  	  my_syslog(LOG_WARNING, _("possible DNS-rebind attack detected: %s"), daemon->namebuff);
  	  munged = 1;
-@@ -666,6 +675,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -666,6 +675,8 @@
        header->nscount = htons(0);
        header->arcount = htons(0);
      }
@@ -167,7 +162,7 @@ index 2cf29eb..ae41235 100644
    
    /* the bogus-nxdomain stuff, doctor and NXDOMAIN->NODATA munging can all elide
       sections of the packet. Find the new length here and put back pseudoheader
-@@ -673,6 +684,8 @@ static size_t process_reply(struct dns_header *header, time_t now, struct server
+@@ -673,6 +684,8 @@
    return resize_packet(header, n, pheader, plen);
  }
  
@@ -176,7 +171,7 @@ index 2cf29eb..ae41235 100644
  /* sets new last_server */
  void reply_query(int fd, int family, time_t now)
  {
-@@ -682,14 +695,18 @@ void reply_query(int fd, int family, time_t now)
+@@ -682,14 +695,18 @@
    union mysockaddr serveraddr;
    struct frec *forward;
    socklen_t addrlen = sizeof(serveraddr);
@@ -196,7 +191,7 @@ index 2cf29eb..ae41235 100644
    /* packet buffer overwritten */
    daemon->srv_save = NULL;
    
-@@ -780,6 +797,17 @@ void reply_query(int fd, int family, time_t now)
+@@ -780,6 +797,17 @@
      {
        int check_rebind = 0, no_cache_dnssec = 0, cache_secure = 0;
  
@@ -214,7 +209,7 @@ index 2cf29eb..ae41235 100644
        if (option_bool(OPT_NO_REBIND))
  	check_rebind = !(forward->flags & FREC_NOREBIND);
        
-@@ -993,9 +1021,12 @@ void reply_query(int fd, int family, time_t now)
+@@ -993,9 +1021,12 @@
        else
  	header->hb4 &= ~HB4_CD;
        
@@ -230,11 +225,10 @@ index 2cf29eb..ae41235 100644
  	{
  	  header->id = htons(forward->orig_id);
  	  header->hb4 |= HB4_RA; /* recursion if available */
-diff --git a/src/option.c b/src/option.c
-index b08e98e..2611bea 100644
---- a/src/option.c
-+++ b/src/option.c
-@@ -147,6 +147,9 @@ struct myoption {
+diff -uNr a/src/option.c b/src/option.c
+--- a/src/option.c	Wed Sep 24 05:16:16 2014
++++ b/src/option.c	Sat Dec 20 16:57:58 2014
+@@ -147,6 +147,9 @@
  #define LOPT_LOCAL_SERVICE 335
  #define LOPT_DNSSEC_TIME   336
  #define LOPT_LOOP_DETECT   337
@@ -244,7 +238,7 @@ index b08e98e..2611bea 100644
  
  #ifdef HAVE_GETOPT_LONG
  static const struct option opts[] =  
-@@ -253,6 +256,7 @@ static const struct myoption opts[] =
+@@ -253,6 +256,7 @@
      { "dhcp-broadcast", 2, 0, LOPT_BROADCAST },
      { "neg-ttl", 1, 0, LOPT_NEGTTL },
      { "max-ttl", 1, 0, LOPT_MAXTTL },
@@ -252,7 +246,7 @@ index b08e98e..2611bea 100644
      { "max-cache-ttl", 1, 0, LOPT_MAXCTTL },
      { "dhcp-alternate-port", 2, 0, LOPT_ALTPORT },
      { "dhcp-scriptuser", 1, 0, LOPT_SCRIPTUSR },
-@@ -299,6 +303,8 @@ static const struct myoption opts[] =
+@@ -299,6 +303,8 @@
      { "quiet-dhcp6", 0, 0, LOPT_QUIET_DHCP6 },
      { "quiet-ra", 0, 0, LOPT_QUIET_RA },
      { "dns-loop-detect", 0, 0, LOPT_LOOP_DETECT },
@@ -261,7 +255,7 @@ index b08e98e..2611bea 100644
      { NULL, 0, 0, 0 }
    };
  
-@@ -457,6 +463,8 @@ static struct {
+@@ -457,6 +463,8 @@
    { LOPT_QUIET_RA, OPT_QUIET_RA, NULL, gettext_noop("Do not log RA."), NULL },
    { LOPT_LOCAL_SERVICE, OPT_LOCAL_SERVICE, NULL, gettext_noop("Accept queries only from directly-connected networks"), NULL },
    { LOPT_LOOP_DETECT, OPT_LOOP_DETECT, NULL, gettext_noop("Detect and remove DNS forwarding loops"), NULL },
@@ -270,7 +264,7 @@ index b08e98e..2611bea 100644
    { 0, 0, NULL, NULL, NULL }
  }; 
  
-@@ -698,6 +706,29 @@ static void do_usage(void)
+@@ -698,6 +706,29 @@
      }
  }
  
@@ -300,7 +294,7 @@ index b08e98e..2611bea 100644
  #define ret_err(x) do { strcpy(errstr, (x)); return 0; } while (0)
  
  char *parse_server(char *arg, union mysockaddr *addr, union mysockaddr *source_addr, char *interface, int *flags)
-@@ -2424,6 +2455,7 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2416,6 +2447,7 @@
      case 'T':         /* --local-ttl */
      case LOPT_NEGTTL: /* --neg-ttl */
      case LOPT_MAXTTL: /* --max-ttl */
@@ -308,7 +302,7 @@ index b08e98e..2611bea 100644
      case LOPT_MAXCTTL: /* --max-cache-ttl */
      case LOPT_AUTHTTL: /* --auth-ttl */
        {
-@@ -2434,6 +2466,8 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -2426,6 +2458,8 @@
  	  daemon->neg_ttl = (unsigned long)ttl;
  	else if (option == LOPT_MAXTTL)
  	  daemon->max_ttl = (unsigned long)ttl;
@@ -317,7 +311,7 @@ index b08e98e..2611bea 100644
  	else if (option == LOPT_MAXCTTL)
  	  daemon->max_cache_ttl = (unsigned long)ttl;
  	else if (option == LOPT_AUTHTTL)
-@@ -3853,6 +3887,20 @@ static int one_opt(int option, char *arg, char *errstr, char *gen_err, int comma
+@@ -3845,6 +3879,20 @@
  	break;
        }
  #endif
@@ -338,7 +332,7 @@ index b08e98e..2611bea 100644
  		
      default:
        ret_err(_("unsupported option (check that dnsmasq was compiled with DHCP/TFTP/DNSSEC/DBus support)"));
-@@ -4182,7 +4230,24 @@ void read_servers_file(void)
+@@ -4174,7 +4222,24 @@
    
    read_file(daemon->servers_file, f, LOPT_REV_SERV);
  }
@@ -364,7 +358,7 @@ index b08e98e..2611bea 100644
  
  #ifdef HAVE_DHCP
  void reread_dhcp(void)
-@@ -4296,6 +4361,7 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4288,6 +4353,7 @@
    daemon->dhcp_server_port = DHCP_SERVER_PORT;
    daemon->default_resolv.is_default = 1;
    daemon->default_resolv.name = RESOLVFILE;
@@ -372,10 +366,11 @@ index b08e98e..2611bea 100644
    daemon->resolv_files = &daemon->default_resolv;
    daemon->username = CHUSER;
    daemon->runfile =  RUNFILE;
-@@ -4525,6 +4591,16 @@ void read_opts(int argc, char **argv, char *compile_opts)
+@@ -4516,6 +4582,16 @@
+      as a system default to keep otherwise unconfigured installations safe. */
    if (daemon->if_names || daemon->if_except || daemon->if_addrs || daemon->authserver)
      reset_option_bool(OPT_LOCAL_SERVICE); 
- 
++
 +  if (daemon->spurious.name != NULL)
 +    read_spurious_ip_file(buff);
 +
@@ -385,15 +380,13 @@ index b08e98e..2611bea 100644
 +  sp->max_entry = sp->nr_entry;
 +  /* sort ip for bsearch */
 +  qsort(sp->ip, sp->nr_entry, sizeof(sp->ip[0]), cmp_int32);
-+
+ 
    if (testmode)
      {
-       fprintf(stderr, "dnsmasq: %s.\n", _("syntax check OK"));
-diff --git a/src/rfc1035.c b/src/rfc1035.c
-index 8a7d260..dcb6c94 100644
---- a/src/rfc1035.c
-+++ b/src/rfc1035.c
-@@ -892,6 +892,12 @@ static int find_soa(struct dns_header *header, size_t qlen, char *name, int *doc
+diff -uNr a/src/rfc1035.c b/src/rfc1035.c
+--- a/src/rfc1035.c	Wed Sep 24 05:16:16 2014
++++ b/src/rfc1035.c	Sat Dec 20 16:57:58 2014
+@@ -892,6 +892,12 @@
    return minttl;
  }
  
@@ -406,7 +399,7 @@ index 8a7d260..dcb6c94 100644
  /* Note that the following code can create CNAME chains that don't point to a real record,
     either because of lack of memory, or lack of SOA records.  These are treated by the cache code as 
     expired and cleaned out that way. 
-@@ -1109,6 +1115,15 @@ int extract_addresses(struct dns_header *header, size_t qlen, char *name, time_t
+@@ -1109,6 +1115,15 @@
  			}
  #endif
  		      
@@ -422,11 +415,10 @@ index 8a7d260..dcb6c94 100644
  		      newc = cache_insert(name, &addr, now, attl, flags | F_FORWARD | secflag);
  		      if (newc && cpp)
  			{
-diff --git a/src/util.c b/src/util.c
-index a729f33..8d816aa 100644
---- a/src/util.c
-+++ b/src/util.c
-@@ -245,6 +245,17 @@ void *safe_malloc(size_t size)
+diff -uNr a/src/util.c b/src/util.c
+--- a/src/util.c	Wed Sep 24 05:16:16 2014
++++ b/src/util.c	Sat Dec 20 16:57:58 2014
+@@ -245,6 +245,17 @@
    return ret;
  }    
  
@@ -444,10 +436,11 @@ index a729f33..8d816aa 100644
  void safe_pipe(int *fd, int read_noblock)
  {
    if (pipe(fd) == -1 || 
-@@ -656,3 +667,15 @@ int wildcard_matchn(const char* wildcard, const char* match, int num)
+@@ -655,4 +666,16 @@
+     }
  
    return (!num) || (*wildcard == *match);
- }
++}
 +
 +int cmp_int32(const void *a, const void *b)
 +{
@@ -459,4 +452,4 @@ index a729f33..8d816aa 100644
 +  if (*ia == *ib)
 +      return 0;
 +  return -1;
-+}
+ }
