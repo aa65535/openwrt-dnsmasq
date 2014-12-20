@@ -1,12 +1,12 @@
 OpenWrt's Dnsmasq Patch & Makefile
 ===
 
- > 编译时默认从 [aa65535/dnsmasq][1] 下载最新源码
+ > 编译时使用[稳定版本][D], 最新源码请查看 [aa65535/dnsmasq][1]  
 
 增强功能
 ---
 
- - 添加 `DNS 反劫持` 功能, 来自 [dnsmasq-chinadns][2]
+ - 添加 `DNS 反劫持` 功能, 提取自 [styx-hy/dnsmasq-chinadns][2]
 
  - 添加 `--min-cache-ttl` 选项, 设置 DNS 缓存最小有效期
 
@@ -27,14 +27,15 @@ OpenWrt's Dnsmasq Patch & Makefile
  > make package/dnsmasq/compile V=99
  > ```
 
- - 同样可以将 Patch 应用到 [dnsmasq][1] 后编译出其他平台的可执行文件
+ - 同样可以将 Patch 应用到 dnsmasq 后编译出其他平台的可执行文件
 
  > ```bash
  > # 下载代码
- > git clone https://github.com/aa65535/dnsmasq.git
+ > wget http://thekelleys.org.uk/dnsmasq/dnsmasq-2.72.tar.gz
  > git clone https://github.com/aa65535/openwrt-dnsmasq.git
  > # 打 Patch
- > cd dnsmasq
+ > tar xzf dnsmasq-2.72.tar.gz
+ > cd dnsmasq*
  > patch -p1 < ../openwrt-dnsmasq/patches/001-feature-enhancement.patch
  > # 开始编译
  > make
@@ -44,7 +45,7 @@ OpenWrt's Dnsmasq Patch & Makefile
 ---
 
  - [默认配置文件][4]
- 
+
  - [与 ss-tunnel 搭配][8]
 
 相关项目
@@ -59,6 +60,7 @@ OpenWrt's Dnsmasq Patch & Makefile
 
 
   [1]: https://github.com/aa65535/dnsmasq
+  [D]: http://thekelleys.org.uk/dnsmasq
   [2]: https://github.com/styx-hy/dnsmasq-chinadns
   [3]: https://sourceforge.net/projects/openwrt-dist/files/dnsmasq/
   [4]: https://github.com/aa65535/openwrt-dnsmasq/blob/master/files/dnsmasq.conf
