@@ -5,11 +5,14 @@ Dnsmasq for OpenWrt
 ---
 
  本项目是 [Dnsmasq][1] 在 OpenWrt 上的移植与功能增强  
-  >添加 `DNS 反劫持` 功能, 提取自 [styx-hy/dnsmasq-chinadns][2]  
-  >添加 `--min-cache-ttl` 选项, 设置 DNS 缓存最小有效期  
-
- 当前版本: 2.72-2  
+ 当前版本: 2.72-3  
  [预编译 IPK 下载][3]  
+
+特性
+---
+
+ - 添加 `--ignore-address` 选项, 忽略指定的 IP, 防止 DNS劫持  
+ - 添加 `--min-cache-ttl` 选项, 可设置 DNS缓存最小有效期  
 
 编译
 ---
@@ -61,7 +64,6 @@ Dnsmasq for OpenWrt
 
 
   [1]: http://www.thekelleys.org.uk/dnsmasq/doc.html
-  [2]: https://github.com/styx-hy/dnsmasq-chinadns
   [3]: https://sourceforge.net/projects/openwrt-dist/files/dnsmasq/
   [4]: https://github.com/aa65535/openwrt-dnsmasq/blob/master/files/dnsmasq.conf
   [5]: https://github.com/aa65535/openwrt-chinadns
