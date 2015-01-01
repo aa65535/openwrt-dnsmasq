@@ -40,7 +40,7 @@ Dnsmasq for OpenWrt
    # 打 Patch
    tar xzf dnsmasq-2.72.tar.gz
    cd dnsmasq*
-   patch -p1 < ../openwrt-dnsmasq/patches/001-feature-enhancement.patch
+   patch -p1 < ../openwrt-dnsmasq/patches/111-feature-enhancement.patch
    # 开始编译
    make
    ```
