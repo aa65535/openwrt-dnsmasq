@@ -5,7 +5,7 @@ Dnsmasq for OpenWrt
 ---
 
  本项目是 [Dnsmasq][1] 在 OpenWrt 上的移植与功能增强  
- 当前版本: 2.72-3  
+ 当前版本: 2.72-4  
  [预编译 IPK 下载][3]  
 
 特性
